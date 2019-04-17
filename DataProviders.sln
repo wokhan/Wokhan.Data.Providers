@@ -5,11 +5,7 @@ VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.OracleManagedDataProvider", "OracleManagedDataProvider\Wokhan.Data.Providers.OracleManagedDataProvider.csproj", "{2D43D4C6-79E9-463C-8D67-F932DFC6EDBF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpProvider", "HttpProvider\HttpProvider.csproj", "{4B7D972E-8FF7-47DD-ADB7-82101868A209}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.ExcelDataProvider", "ExcelDataProvider\Wokhan.Data.Providers.ExcelDataProvider.csproj", "{1CECEE50-B636-4844-BABE-FA8501DEC32E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPDataProvider", "SAPDataProvider\SAPDataProvider.csproj", "{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers", "DataProviders\Wokhan.Data.Providers.csproj", "{AB2C616C-8B8D-40DB-B460-36C71A9FEF21}"
 EndProject
@@ -41,18 +37,6 @@ Global
 		{2D43D4C6-79E9-463C-8D67-F932DFC6EDBF}.Release|x64.Build.0 = Release|Any CPU
 		{2D43D4C6-79E9-463C-8D67-F932DFC6EDBF}.Release|x86.ActiveCfg = Release|Any CPU
 		{2D43D4C6-79E9-463C-8D67-F932DFC6EDBF}.Release|x86.Build.0 = Release|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Debug|x64.Build.0 = Debug|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Debug|x86.Build.0 = Debug|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Release|x64.ActiveCfg = Release|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Release|x64.Build.0 = Release|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Release|x86.ActiveCfg = Release|Any CPU
-		{4B7D972E-8FF7-47DD-ADB7-82101868A209}.Release|x86.Build.0 = Release|Any CPU
 		{1CECEE50-B636-4844-BABE-FA8501DEC32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1CECEE50-B636-4844-BABE-FA8501DEC32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CECEE50-B636-4844-BABE-FA8501DEC32E}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -65,18 +49,6 @@ Global
 		{1CECEE50-B636-4844-BABE-FA8501DEC32E}.Release|x64.Build.0 = Release|Any CPU
 		{1CECEE50-B636-4844-BABE-FA8501DEC32E}.Release|x86.ActiveCfg = Release|Any CPU
 		{1CECEE50-B636-4844-BABE-FA8501DEC32E}.Release|x86.Build.0 = Release|Any CPU
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Debug|x64.ActiveCfg = Debug|x64
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Debug|x64.Build.0 = Debug|x64
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Debug|x86.ActiveCfg = Debug|x86
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Debug|x86.Build.0 = Debug|x86
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Release|x64.ActiveCfg = Release|x64
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Release|x64.Build.0 = Release|x64
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Release|x86.ActiveCfg = Release|x86
-		{6ABDD9EF-0312-41EB-AB16-F86AD08F251E}.Release|x86.Build.0 = Release|x86
 		{AB2C616C-8B8D-40DB-B460-36C71A9FEF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB2C616C-8B8D-40DB-B460-36C71A9FEF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2C616C-8B8D-40DB-B460-36C71A9FEF21}.Debug|x64.ActiveCfg = Debug|Any CPU
