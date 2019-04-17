@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0-preview3.19128.7" />
+    <PackageReference Include="Wokhan.Extensions" Version="1.190417.2.78" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataProviders\Wokhan.Data.Providers.csproj" />
+  </ItemGroup>
+
+</Project>

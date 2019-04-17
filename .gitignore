@@ -3,3 +3,17 @@
 ################################################################################
 
 /.vs
+/CSVDataProvider/bin/Debug/netcoreapp3.0
+/CSVDataProvider/obj
+/DataProviders/bin/Debug
+/DataProviders/obj
+/ExcelDataProvider/bin/Debug/netcoreapp3.0
+/ExcelDataProvider/obj
+/HttpProvider/obj
+/NPOIExcelDataProvider/bin/Debug/netcoreapp3.0
+/NPOIExcelDataProvider/obj
+/OracleManagedDataProvider/bin/Debug/netcoreapp3.0
+/OracleManagedDataProvider/obj
+/SAPDataProvider/obj
+/SqlServerDataProvider/bin/Debug/netcoreapp3.0
+/SqlServerDataProvider/obj
