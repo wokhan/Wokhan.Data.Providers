@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Wokhan.Data.Providers.Bases;
 
@@ -53,5 +54,16 @@ namespace Wokhan.Data.Providers.Contracts
         long Ping(string host);
 
         long PerfTest(string repository);
+
+
+        [Obsolete]
+        List<ColumnDescription> GetColumnNames(string repository);
+
+        IEnumerable<string> GetAllRelationsNames(string repository);
+
+        void OverrideRelationInfo(ref EnrichedRelation enrrel);
+
+        [Obsolete("Should be replaced by IQueryable Linq statements")]
+        DataSet GetData(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly);
     }
 }

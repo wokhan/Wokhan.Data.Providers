@@ -11,53 +11,10 @@ using System.Net.NetworkInformation;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Dynamic.Core;
+using System.Data;
 
 namespace Wokhan.Data.Providers.Bases
 {
-    public class DataProviderStruct
-    {
-        public string Copyright { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string IconPath { get; set; }
-        public Type Type { get; set; }
-
-        public bool IsExternal { get; set; }
-    }
-
-    public class DataProviderMemberStruct : INotifyPropertyChanged
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Type MemberType { get; set; }
-        public bool IsFile { get; set; }
-        public string FileFilter { get; set; }
-        public ProviderParameterAttribute.MethodDel ValuesGetter { get; set; }
-        public bool HasValuesGetter { get { return ValuesGetter != null; } }
-        public Dictionary<string, string> Values { get { return ValuesGetter(); } }
-        public string ExclusionGroup { get; set; }
-        public object ValueWrapper
-        {
-            get { return Container.Type.GetProperty(Name).GetValue(Container); }
-            set { Container.Type.GetProperty(Name).SetValue(Container, value); NotifyPropertyChanged("ValueWrapper"); }
-        }
-
-        public IDataProvider Container { get; internal set; }
-        public bool IsActive { get; internal set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-    }
-
     [DataContract]
     public class DataProvider : AbstractDataProvider, IDataProvider
     {
@@ -396,6 +353,26 @@ namespace Wokhan.Data.Providers.Bases
         {
             details = "Not implemented";
             return false;
+        }
+
+        public List<ColumnDescription> GetColumnNames(string repository)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetAllRelationsNames(string repository)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OverrideRelationInfo(ref EnrichedRelation enrrel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DataSet GetData(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly)
+        {
+            throw new NotImplementedException();
         }
     }
 }
