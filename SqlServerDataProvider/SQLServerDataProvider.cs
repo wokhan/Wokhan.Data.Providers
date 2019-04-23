@@ -9,23 +9,23 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright="Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright="Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
     public class SQLServerDataProvider : DBDataProvider, IDBDataProvider, IExposedDataProvider
     {
 
-        public new DbDataAdapter DataAdapterInstancer()
+        public override DbDataAdapter DataAdapterInstancer()
         {
             return new SqlDataAdapter("", this.ConnectionString);
         }
 
-        public new DbConnection GetConnection()
+        public override DbConnection GetConnection()
         {
             return new SqlConnection(this.ConnectionString);
         }
 
         public new Dictionary<string, object> GetDefaultRepositories()
         {
-            Dictionary<string, object> ret = new Dictionary<string, object>();
+            var ret = new Dictionary<string, object>();
             
             using (var conn = new SqlConnection(this.ConnectionString))
             {
@@ -36,7 +36,7 @@ namespace Wokhan.Data.Providers
                     string val;
                     while (sdr.Read())
                     {
-                        var qry = String.Join(", ", GetAllColumns(sdr[0].ToString()).Select(h => h.Key));
+                        var qry = String.Join(", ", GetColumns(sdr[0].ToString()).Select(h => h.Name));
                         val = sdr[0].ToString() + "." + sdr[1].ToString(); 
                         ret.Add(val, "SELECT " + qry + " FROM " + val);
                     }

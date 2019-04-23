@@ -7,7 +7,7 @@ namespace Wokhan.Data.Providers.Bases
     public class SearchOptions
     {
         public List<string> Attributes;
-        public List<EnrichedRelation> Relations = new List<EnrichedRelation>();
+        public List<RelationDefinition> Relations = new List<RelationDefinition>();
         public int RelationsDepth;
         public string Filter = String.Empty;
         public List<string> SortOrders = new List<string>();

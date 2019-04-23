@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Extensions\**" />
+    <Compile Remove="Generated\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <EmbeddedResource Remove="Generated\**" />
+    <None Remove="Extensions\**" />
+    <None Remove="Generated\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="WSProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataProviders\Wokhan.Data.Providers.csproj" />
+    <ProjectReference Include="..\OracleManagedDataProvider\Wokhan.Data.Providers.OracleManagedDataProvider.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -58,29 +58,37 @@ namespace Wokhan.Data.Providers
             return srcAttributesCollection.IndexOf(srcAttribute).ToString();
         }
 
-        private Dictionary<string, Dictionary<string, Type>> _headers = new Dictionary<string, Dictionary<string, Type>>();
+        private Dictionary<string, List<ColumnDescription>> _headers = new Dictionary<string, List<ColumnDescription>>();
 
-        public new Dictionary<string, Type> GetHeaders(string repository = null)
+        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
-            Dictionary<string, Type> ret = null;
+            List<ColumnDescription> ret = null;
 
             lock (_headers)
             {
                 if (!_headers.TryGetValue(repository, out ret))
                 {
-                    TextFieldParser csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
+                    var csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
                     csvParser.Delimiters = new[] { this._delimiter };
                     csvParser.HasFieldsEnclosedInQuotes = this._usequotes;
 
                     var fields = csvParser.ReadFields();
                     if (this.Hasheader)
                     {
-                        ret = fields.Select(f => Regex.Replace(f, "[^a-zA-Z0-9]", "_")).Select((f, i) => new { f = String.IsNullOrEmpty(f) ? "X" + i : f, i, cnt = fields.Count(ff => !String.IsNullOrEmpty(f) && ff == f) }).ToDictionary(s => s.cnt > 1 ? s.f + s.i : s.f, s => typeof(string));
+                        ret = fields.Select(f => Regex.Replace(f, "[^a-zA-Z0-9]", "_"))
+                                    .Select((f, i) => new
+                                    {
+                                        f = String.IsNullOrEmpty(f) ? "X" + i : f,
+                                        i,
+                                        cnt = fields.Count(ff => !String.IsNullOrEmpty(f) && ff == f)
+                                    })
+                                    .Select(s => new ColumnDescription() { Name = s.cnt > 1 ? s.f + s.i : s.f, Type = typeof(string) })
+                                    .ToList();
                     }
                     else
                     {
-                        int i = 0;
-                        ret = fields.ToDictionary(s => "X" + i++, s => typeof(string));
+                        var i = 0;
+                        ret = fields.Select(f => new ColumnDescription() { Name = "X" + i++, Type = typeof(string) }).ToList();
                     }
 
                     csvParser.Close();
@@ -96,18 +104,18 @@ namespace Wokhan.Data.Providers
         {
             if (MergeFiles)
             {
-                var hd = this.GetHeaders(repository).Keys.ToArray();
-                return this.Repositories.SelectMany(r => __GetTypesData<T, TK>(r.Key, attributes ?? hd, true)).AsQueryable();
+                var hd = this.GetColumns(repository).Select(c => c.Name).ToArray();
+                return this.Repositories.SelectMany(r => __GetTypedData<T, TK>(r.Key, attributes ?? hd, true)).AsQueryable();
             }
             else
             {
-                return __GetTypesData<T, TK>(repository, attributes, false);
+                return __GetTypedData<T, TK>(repository, attributes, false);
             }
         }
 
-        private IQueryable<T> __GetTypesData<T, TK>(string repository, IEnumerable<string> attributes, bool ignoreHeader) where T : class
+        private IQueryable<T> __GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, bool ignoreHeader) where T : class
         {
-            TextFieldParser csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
+            var csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
             csvParser.Delimiters = new[] { this._delimiter };
             csvParser.HasFieldsEnclosedInQuotes = this._usequotes;
 
@@ -125,7 +133,7 @@ namespace Wokhan.Data.Providers
                 }
                 else
                 {
-                    attrlst = this.GetHeaders(repository).Keys.ToArray();
+                    attrlst = this.GetColumns(repository).Select(c => c.Name).ToArray();
                 }
 
                 return InnerGetData(csvParser, repository, attributes).Select(x => x.ToObject<T>(attrlst)).AsQueryable();
@@ -153,12 +161,12 @@ namespace Wokhan.Data.Providers
 
         private IEnumerable<string[]> InnerGetData(TextFieldParser csvParser, string repository, IEnumerable<string> attributes = null)
         {
-            var headers = this.GetHeaders(repository);
+            var headers = this.GetColumns(repository);
             int[] idx = null;
             int targetLength;
             if (attributes != null)
             {
-                idx = attributes.Join(headers.Select((h, i) => new { h, i }), a => a, h => h.h.Key, (a, h) => h.i)
+                idx = attributes.Join(headers.Select((h, i) => new { h, i }), a => a, h => h.h.Name, (a, h) => h.i)
                                 .ToArray();
                 targetLength = idx.Length;
             }

@@ -9,6 +9,7 @@ namespace Wokhan.Data.Providers.Bases
     [DataContract]
     public abstract class AbstractDataProvider
     {
+        public abstract Type Type { get; }
 
         protected abstract long Count(string repository = null);
 

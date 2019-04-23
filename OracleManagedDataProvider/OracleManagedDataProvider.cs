@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", Name = "Oracle ODP.NET Managed Driver", Icon = "/Resources/Providers/SQL.png")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Oracle ODP.NET Managed Driver", Icon = "/Resources/Providers/SQL.png")]
     public class OracleManagedDataProvider : DBDataProvider, IDBDataProvider, IExposedDataProvider
     {
         [ProviderParameter("SID", ExclusionGroup = "Connection details", Position = 25)]
@@ -39,7 +39,7 @@ namespace Wokhan.Data.Providers
             get { return String.IsNullOrEmpty(this.ConnectionString) ? String.Format(cStringformat, _host, Port, SID, Username, Password) : this.ConnectionString; }
         }
 
-        public new DbDataAdapter DataAdapterInstancer()
+        public override DbDataAdapter DataAdapterInstancer()
         {
             var conn = new OracleConnection(RealConnectionString);
             //conn.StateChange += conn_StateChange;
@@ -47,7 +47,7 @@ namespace Wokhan.Data.Providers
             return new OracleDataAdapter("", conn);
         }
 
-        public new DbConnection GetConnection()
+        public override DbConnection GetConnection()
         {
             return new OracleConnection(RealConnectionString);
         }
@@ -69,9 +69,9 @@ namespace Wokhan.Data.Providers
 
         public new Dictionary<string, object> GetDefaultRepositories()
         {
-            Dictionary<string, object> ret = new Dictionary<string, object>();
+            var ret = new Dictionary<string, object>();
 
-            using (OracleConnection conn = new OracleConnection(RealConnectionString))
+            using (var conn = new OracleConnection(RealConnectionString))
             {
                 conn.Open();
                 string req;
@@ -83,14 +83,14 @@ namespace Wokhan.Data.Providers
                 {
                     req = "SELECT OWNER || '.' || TABLE_NAME FROM ALL_TABLES WHERE OWNER = '" + Schema + "' UNION ALL SELECT OWNER || '.' || VIEW_NAME FROM ALL_VIEWS WHERE OWNER = '" + Schema + "'";
                 }
-                using (OracleCommand cmd = new OracleCommand(req, conn))
+                using (var cmd = new OracleCommand(req, conn))
                 {
                     OracleDataReader sdr = cmd.ExecuteReader();
                     string val;
                     while (sdr.Read())
                     {
                         val = sdr[0].ToString();
-                        var qry = String.Join(", ", GetAllColumns(val).Select(h => h.Key));
+                        var qry = String.Join(", ", GetColumns(val).Select(h => h.Name));
                         ret.Add(val, "SELECT " + qry + " FROM " + val);
                     }
                 }

@@ -1,14 +1,10 @@
-﻿using Wokhan.Data.Providers.Attributes;
-using Wokhan.Data.Providers.Contracts;
+﻿using Wokhan.Data.Providers.Contracts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Net.NetworkInformation;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Dynamic.Core;
 using System.Data;
@@ -21,33 +17,16 @@ namespace Wokhan.Data.Providers.Bases
         [DataMember]
         public string Name { get; set; }
 
-        private List<string> _selectedGroups = new List<string>();
         [DataMember]
-        public List<string> SelectedGroups
-        {
-            get { return _selectedGroups; }
-            set { _selectedGroups = value; }
-        }
+        public List<string> SelectedGroups { get; set; } = new List<string>();
 
-        public List<IGrouping<string, DataProviderMemberStruct>> ExpParameters { get { return GetExpParameters(this); } }
+        public string Host { get; set; } = "localhost";
 
-        public DataProviderStruct ProviderTypeInfo { get { return DataProvider.AllProviders.Single(d => d.Type == this.GetType()); } }
+        public override sealed Type Type { get { return this.GetType(); } }
 
-        public Type Type { get { return this.GetType(); } }
+        public Dictionary<string, string> MonitoringTypes { get; }
 
-        public string Host { get { return "localhost"; } }
-
-        private Dictionary<string, string> _monitoringTypes = new Dictionary<string, string> {
-            { "COUNTALL", "Count" },
-            { "CHECKVAL", "Retrieve attributes values" },
-            { "PERF", "Performance check" },
-            { "PING", "Server ping" }
-            //{ "Any modification", "CHECKMOD" },
-        };
-
-        public Dictionary<string, string> MonitoringTypes { get { return _monitoringTypes; } }
-
-        public bool IsDirectlyBindable { get { return false; } }
+        public DataProviderStruct ProviderTypeInfo { get { return DataProviders.AllProviders.Single(d => d.Type == this.GetType()); } }
 
         private Dictionary<string, object> _repositories = new Dictionary<string, object>();
         [DataMember]
@@ -80,76 +59,6 @@ namespace Wokhan.Data.Providers.Bases
             }
         }
 
-        public List<IGrouping<string, DataProviderMemberStruct>> GetExpParameters()
-        {
-            return GetExpParameters(this);
-        }
-
-        public static List<IGrouping<string, DataProviderMemberStruct>> GetExpParameters(IDataProvider prv)
-        {
-            var tr = prv.Type.GetProperties();
-            return tr.Where(t => t.GetCustomAttributes<ProviderParameterAttribute>(true).Any())
-                    .Select(p =>
-                    {
-                        var attr = p.GetCustomAttribute<ProviderParameterAttribute>(true);
-                        return new { Pos = attr.Position, Prov = new DataProviderMemberStruct() { IsActive = prv.SelectedGroups.Contains(attr.ExclusionGroup), Container = prv, Name = p.Name, Description = attr.Description, MemberType = p.PropertyType, IsFile = attr.IsFile, FileFilter = attr.FileFilter, ExclusionGroup = attr.ExclusionGroup, ValuesGetter = attr.Method } };
-                    })
-                    .Where(t => t.Prov.Description != null)
-                    .OrderBy(t => t.Pos)
-                    .ThenBy(t => t.Prov.Description)
-                    .Select(t => t.Prov)
-                    .GroupBy(c => c.ExclusionGroup ?? null)
-                    .ToList();
-        }
-
-
-        private static IEnumerable<DataProviderStruct> _cachedProviders = null;
-        public static IEnumerable<DataProviderStruct> AllProviders
-        {
-            get
-            {
-                if (_cachedProviders == null)
-                {
-                    var to = Assembly.GetExecutingAssembly()
-                                     .GetTypes()
-                                     .Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
-                                     .Select(t => new { External = false, Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() });
-
-                    if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\providers"))
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\providers");
-                        }
-                        catch { }
-                    }
-                    else
-                    {
-                        var external = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "\\providers", "*.dll")
-                                                .SelectMany(f =>
-                                                {
-                                                    try
-                                                    {
-                                                        return Assembly.LoadFrom(f).GetTypes();
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        return new Type[0];
-                                                    }
-                                                });
-
-                        to = to.Concat(external.Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
-                               .Select(t => new { External = true, Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() }));
-                    }
-
-                    var tb = to.Select(t => new DataProviderStruct() { IsExternal = t.External, Description = t.Attributes.Description, Name = t.Attributes.Name, Category = t.Attributes.Category, Copyright = t.Attributes.Copyright, IconPath = t.Attributes.Icon, Type = t.Type }).ToArray();
-
-                    _cachedProviders = tb;
-                }
-
-                return _cachedProviders;
-            }
-        }
 
 
         public string GetFormatKey(List<object> srcAttributesCollection, object srcAttribute)
@@ -157,15 +66,17 @@ namespace Wokhan.Data.Providers.Bases
             return null;
         }
 
-        public Dictionary<string, Type> GetHeaders(string repository = null)
-        {
-            return null;
-        }
-
+        /// <summary>
+        /// Gets typed data dynamically (for when the target type is unknown)
+        /// </summary>
+        /// <param name="repository">Source repository</param>
+        /// <param name="attributes">Attributes (amongst repository's ones)</param>
+        /// <param name="keys">Unused</param>
+        /// <returns></returns>
         public override sealed IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null)
         {
-            var th = ((IDataProvider)this).GetTypedClass(repository);
-            Type xt;
+            var dataType = ((IDataProvider)this).GetTypedClass(repository);
+            Type keyType;
             /*if (keys != null)
             {
                 lock (cachedTypes)
@@ -181,12 +92,13 @@ namespace Wokhan.Data.Providers.Bases
             }
             else*/
             {
-                xt = typeof(string);
+                keyType = typeof(string);
             }
-            var m = this.GetType().GetMethod("GetTypedData").MakeGenericMethod(th, xt);
+            var m = this.GetType().GetMethod("GetTypedData").MakeGenericMethod(dataType, keyType);
 
             return (IQueryable<dynamic>)m.Invoke(this, new object[] { repository, attributes });
         }
+
 
         public IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes) where T : class
         {
@@ -202,25 +114,43 @@ namespace Wokhan.Data.Providers.Bases
         {
             return null;
         }
+        /*
+        private IQueryable<dynamic> GetDataRecursive(SearchOptions init, Dictionary<string, SearchOptions> searchRep)
+        {
+            var query = GetData(init.Key, init.Value.Attributes);
+            foreach (var rel in init.Value.Relations)
+            {
+                if (searchRep.TryGetValue(rel.Target, out var next))
+                {
+                    query = query.Join(GetDataRecursive(rel, searchRep), rel.)
+                }
+                else
+                {
+                    query = query.Join(GetData(rel.Target), rel.SourceAttribute, rel.TargetAttribute, "new(inner, outer)", null);
+                }
+            }
+
+        }*/
+
 
         public long Monitor(string key, string repository, out object data, string filter = null, string attribute = null)
         {
-            if (!MonitoringTypes.ContainsKey(key))
+            if (!DataProviders.MonitoringTypes.ContainsKey(key))
             {
                 throw new ArgumentException("The specified monitoring type does not exist for the current provider.");
             }
 
             switch (key)
             {
-                case "PING":
+                case DataProviders.MonitoringModes.PING:
                     data = null;
                     return ((IDataProvider)this).Ping(Host);
 
-                case "PERF":
+                case DataProviders.MonitoringModes.PERF:
                     data = null;
                     return ((IDataProvider)this).PerfTest(repository);
 
-                case "CHECKVAL":
+                case DataProviders.MonitoringModes.CHECKVAL:
                     if (String.IsNullOrEmpty(attribute))
                     {
                         throw new ArgumentNullException("attribute");
@@ -233,7 +163,7 @@ namespace Wokhan.Data.Providers.Bases
                     data = ((IEnumerable<dynamic>)q.Select("new(" + attribute + ")")).ToList();
                     return ((IList)data).Count;
 
-                case "COUNTALL":
+                case DataProviders.MonitoringModes.COUNTALL:
                     data = null;
                     var qc = ((IDataProvider)this).GetData(repository);
                     if (!String.IsNullOrEmpty(filter))
@@ -249,7 +179,7 @@ namespace Wokhan.Data.Providers.Bases
 
         }
 
-        private static Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
+        private static readonly Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
         public Type GetTypedClass(string repository)
         {
             Type ret;
@@ -258,7 +188,7 @@ namespace Wokhan.Data.Providers.Bases
                 var cachekey = this.GetHashCode() + "_" + repository;
                 if (!cachedTypes.TryGetValue(cachekey, out ret))
                 {
-                    var properties = new[] { new DynamicProperty("__UID", typeof(long)) }.Concat(((IDataProvider)this).GetHeaders(repository).Select(t => new DynamicProperty(t.Key, t.Value))).ToList();
+                    var properties = new[] { new DynamicProperty("__UID", typeof(long)) }.Concat(((IDataProvider)this).GetColumns(repository).Select(t => new DynamicProperty(t.Name, t.Type))).ToList();
 
                     ret = DynamicClassFactory.CreateType(properties);
 
@@ -269,7 +199,6 @@ namespace Wokhan.Data.Providers.Bases
             return ret;
         }
 
-
         protected override long Count(string repository = null)
         {
             return ((IDataProvider)this).GetData(repository).Count();
@@ -277,14 +206,14 @@ namespace Wokhan.Data.Providers.Bases
 
         public long GetMTU(string host)
         {
-            Ping pong = new System.Net.NetworkInformation.Ping();
+            var pong = new System.Net.NetworkInformation.Ping();
             PingReply ret = null;
 
-            int startsize = 2000;
-            int smaller = 0;
-            int higher = 4000;
+            var startsize = 2000;
+            var smaller = 0;
+            var higher = 4000;
 
-            bool keepgoing = true;
+            var keepgoing = true;
             while (keepgoing)
             {
                 ret = pong.Send(host, 5000, new byte[startsize], new PingOptions() { DontFragment = true });
@@ -323,20 +252,16 @@ namespace Wokhan.Data.Providers.Bases
 
         public long Ping(string host)
         {
-            Ping pong = new System.Net.NetworkInformation.Ping();
-
-            return pong.Send(host).RoundtripTime;
+            return new Ping().Send(host).RoundtripTime;
         }
 
 
         public double MeasureBandwidth(string host)
         {
-            long optsize = GetMTU(host);
+            var optsize = GetMTU(host);
 
-            Ping pong = new System.Net.NetworkInformation.Ping();
-            PingReply ret = null;
-
-            ret = pong.Send(host, 5000, new byte[optsize * 10], new PingOptions() { DontFragment = false });
+            var pong = new Ping();
+            PingReply ret = pong.Send(host, 5000, new byte[optsize * 10], new PingOptions() { DontFragment = false });
 
             if (ret.Status == IPStatus.Success)
             {
@@ -348,31 +273,26 @@ namespace Wokhan.Data.Providers.Bases
             }
         }
 
-
         public bool Test(out string details)
         {
             details = "Not implemented";
             return false;
         }
 
-        public List<ColumnDescription> GetColumnNames(string repository)
+        public List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetAllRelationsNames(string repository)
+        public IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null)
+        {
+            return new RelationDefinition[0];
+        }
+
+        public DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly)
         {
             throw new NotImplementedException();
         }
 
-        public void OverrideRelationInfo(ref EnrichedRelation enrrel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DataSet GetData(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

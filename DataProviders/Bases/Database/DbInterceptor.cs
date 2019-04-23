@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity.Infrastructure.Interception;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Wokhan.Data.Providers.Bases.Database;
 
 namespace Wokhan.Data.Providers.Bases
 {
@@ -29,7 +30,7 @@ namespace Wokhan.Data.Providers.Bases
 
         private static void OverrideCommand(System.Data.Common.DbCommand command, DbCommandInterceptionContext<System.Data.Common.DbDataReader> interceptionContext)
         {
-            var ictxt = interceptionContext.DbContexts.First() as DBDataProvider.IDynamicDbContext;
+            var ictxt = interceptionContext.DbContexts.First() as IDynamicDbContext;
             if (ictxt != null)
             {
                 command.CommandText = Regex.Replace(command.CommandText.Replace("\"DYNAMICSCHEMA\".\"DYNAMICTABLE\"", " ( " + ictxt.basequery + " ) "), "\".*?\"\\.\"__UID\"", "ROWNUM");

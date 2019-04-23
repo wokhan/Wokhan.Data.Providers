@@ -1,6 +1,6 @@
 ﻿namespace Wokhan.Data.Providers.Bases
 {
-    public class EnrichedRelation
+    public class RelationDefinition
     {
         public string Name;
         public string Source;

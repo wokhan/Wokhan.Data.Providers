@@ -11,7 +11,7 @@ using Wokhan.Collections.Extensions;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Files", Name = "Excel Workbook", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
+    [DataProvider(Category = "Files", IsDirectlyBindable = true, Name = "Excel Workbook", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
     public class ExcelDataProvider : DataProvider, IDataProvider, IExposedDataProvider
     {
         [ProviderParameter("File", IsFile = true)]
@@ -46,8 +46,8 @@ namespace Wokhan.Data.Providers
             }
         };
 
-        private Dictionary<string, Dictionary<string, Type>> cachedHeaders = new Dictionary<string, Dictionary<string, Type>>();
-        public new Dictionary<string, Type> GetHeaders(string repository = null)
+        private Dictionary<string, List<ColumnDescription>> cachedHeaders = new Dictionary<string, List<ColumnDescription>>();
+        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             if (!cachedHeaders.ContainsKey(repository))
             {
@@ -61,7 +61,8 @@ namespace Wokhan.Data.Providers
                     }
 
                     cachedHeaders.Add(repository, reader.AsDataSet(defaultConf).Tables[rep].Columns.Cast<DataColumn>()
-                                                          .ToDictionary(c => c.ColumnName, c => c.DataType));
+                                                          .Select(c => new ColumnDescription() { Name = c.ColumnName, Type = c.DataType })
+                                                          .ToList());
                 }
             }
 
@@ -74,7 +75,7 @@ namespace Wokhan.Data.Providers
             using (var reader = getReader())
             {
                 var res = reader.ResultsCount;
-                for (int i = 0; i < res; i++)
+                for (var i = 0; i < res; i++)
                 {
                     ret.Add(reader.Name + "[#" + (i + 1) + "]", reader.Name);
                 }
@@ -98,11 +99,6 @@ namespace Wokhan.Data.Providers
         //        }
         //    }
         //}
-
-        public new bool IsDirectlyBindable
-        {
-            get { return true; }
-        }
 
         public new bool Test(out string details)
         {
@@ -138,7 +134,7 @@ namespace Wokhan.Data.Providers
 
         private IEnumerable<T> _getdata<T>(string repository, string[] attributes)
         {
-            var attrlst = GetHeaders(repository).Keys.ToList();
+            var attrlst = GetColumns(repository).Select(c => c.Name).ToList();
             var rep = (string)GetDefaultRepositories()[repository];
 
             using (var reader = getReader())

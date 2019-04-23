@@ -10,7 +10,7 @@ using Wokhan.Collections.Extensions;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Files", Name = "Excel Workbook (NPOI)", Description = "Allows to load data from XLS or XLSX worksheets.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
+    [DataProvider(Category = "Files", IsDirectlyBindable = true, Name = "Excel Workbook (NPOI)", Description = "Allows to load data from XLS or XLSX worksheets.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
     public class NPOIXLSDataProvider : DataProvider, IDataProvider, IExposedDataProvider
     {
         [ProviderParameter("File", IsFile = true, FileFilter = "Excel workbook|*.xls;*.xlsx")]
@@ -68,12 +68,12 @@ namespace Wokhan.Data.Providers
             }
         }
 
-        private Dictionary<string, Dictionary<string, Type>> cachedHeaders = new Dictionary<string, Dictionary<string, Type>>();
-        public new Dictionary<string, Type> GetHeaders(string repository = null)
+        private Dictionary<string, List<ColumnDescription>> cachedHeaders = new Dictionary<string, List<ColumnDescription>>();
+        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             if (!cachedHeaders.ContainsKey(repository))
             {
-                Dictionary<string, Type> ret = new Dictionary<string, System.Type>();
+                var ret = new List<ColumnDescription>();
             
                 var rep = (string)GetDefaultRepositories()[repository];
 
@@ -83,12 +83,14 @@ namespace Wokhan.Data.Providers
 
                 if (HasHeader)
                 {
-                    ret = headerrow.Cells.ToDictionary(c => c.StringCellValue, c => typeof(object));
+                    ret = headerrow.Cells.Select(c => new ColumnDescription() { Name = c.StringCellValue, Type = typeof(object) })
+                                         .ToList();
                 }
                 else
                 {
                     ret = headerrow.Cells.Select((c, i) => new { c, i })
-                                         .ToDictionary(x => "Column" + (x.i + 1), x => typeof(object));
+                                         .Select(x => new ColumnDescription() { Name = "Column" + (x.i + 1), Type = typeof(object) })
+                                         .ToList();
                 }
 
                 cachedHeaders.Add(repository, ret);
@@ -105,7 +107,7 @@ namespace Wokhan.Data.Providers
                 _defaultRepositories = new Dictionary<string, object>();
                 var wb = WorkbookFactory.Create(File);
 
-                for (int i = 0; i < wb.NumberOfSheets; i++)
+                for (var i = 0; i < wb.NumberOfSheets; i++)
                 {
                     var sheet = wb.GetSheetName(i);
                     _defaultRepositories.Add(sheet.Replace(" ", "_"), sheet);
@@ -115,11 +117,6 @@ namespace Wokhan.Data.Providers
             return _defaultRepositories;
         }
 
-
-        public new bool IsDirectlyBindable
-        {
-            get { return true; }
-        }
 
         public new bool Test(out string details)
         {
@@ -140,7 +137,7 @@ namespace Wokhan.Data.Providers
 
         private IEnumerable<T> _getdata<T>(string repository, string[] attributes)
         {
-            var attrlst = GetHeaders(repository).Keys.ToList();
+            var attrlst = GetColumns(repository).Select(c => c.Name).ToList();
             var rep = (string)GetDefaultRepositories()[repository];
 
             var wb = WorkbookFactory.Create(File);

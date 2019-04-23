@@ -17,3 +17,5 @@
 /SAPDataProvider/obj
 /SqlServerDataProvider/bin/Debug/netcoreapp3.0
 /SqlServerDataProvider/obj
+/TIBCOMDMDataProvider/obj
+/TIBCOMDMDataProvider/bin/Debug/netcoreapp3.0

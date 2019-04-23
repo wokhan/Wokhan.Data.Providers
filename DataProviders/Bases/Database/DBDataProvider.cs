@@ -10,13 +10,12 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Data.Entity.Infrastructure.Interception;
+using Wokhan.Data.Providers.Bases.Database;
 
 namespace Wokhan.Data.Providers.Bases
 {
-    public class DBDataProvider : DataProvider, IDBDataProvider
+    public abstract class DBDataProvider : DataProvider, IDBDataProvider
     {
-        public new bool IsDirectlyBindable { get { return true; } }
-
         [ProviderParameter("Connection String", ExclusionGroup = "Connection string", Position = 0)]
         public string ConnectionString { get; set; }
 
@@ -35,20 +34,24 @@ namespace Wokhan.Data.Providers.Bases
         [ProviderParameter("Password", true, ExclusionGroup = "Connection details", Position = 50)]
         public string Password { get; set; }
 
+        [ProviderParameter("Globally excluded columns", true, ExclusionGroup = "Advanced", Position = 60)]
+        public string[] HiddenFields{ get; set; }
+
+        public Dictionary<string, string> TODOColumnsRelAttributes { get; private set; }
+        public Dictionary<string, string>  TODOColumnsHidden { get; private set; }
+        public List<string>  TODORepositoryRel { get; private set; }
+        public List<string> TODORelationSoftLink { get; private set; }
+        public List<string> TODORelationCartesian { get; private set; }
+
+
         static DBDataProvider()
         {
             DbInterception.Add(new DbInterceptor());
         }
 
-        public DbDataAdapter DataAdapterInstancer()
-        {
-            return null;
-        }
+        public abstract DbDataAdapter DataAdapterInstancer();
 
-        public DbConnection GetConnection()
-        {
-            return null;
-        }
+        public abstract DbConnection GetConnection();
 
         public static new string GetFormatKey(List<object> srcAttributesCollection, object srcAttribute)
         {
@@ -57,7 +60,7 @@ namespace Wokhan.Data.Providers.Bases
 
         public new IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null)
         {
-            DataTable tmp = new DataTable();
+            var tmp = new DataTable();
             if (Repositories.ContainsKey(repository))
             {
                 using (var oda = ((IDBDataProvider)this).DataAdapterInstancer())
@@ -79,49 +82,44 @@ namespace Wokhan.Data.Providers.Bases
             return tmp.DefaultView;
         }
 
-        public Dictionary<string, Type> GetAllColumns(string repository)
-        {
-            using (var oda = ((IDBDataProvider)this).DataAdapterInstancer())
-            {
-                DataTable tmp = new DataTable();
-                oda.SelectCommand.CommandText = "SELECT * FROM " + repository + " WHERE ROWNUM = 1";
-                oda.FillSchema(tmp, SchemaType.Source);
+        //public new Dictionary<string, Type> GetColumns(string repository, IList<string> names = null)
+        //{
+        //    using (var oda = ((IDBDataProvider)this).DataAdapterInstancer())
+        //    {
+        //        DataTable tmp = new DataTable();
+        //        oda.SelectCommand.CommandText = "SELECT * FROM " + repository + " WHERE ROWNUM = 1";
+        //        oda.FillSchema(tmp, SchemaType.Source);
 
-                return tmp.Columns.Cast<DataColumn>().ToDictionary(c => c.ColumnName, c => c.DataType);
-            }
-        }
+        //        return tmp.Columns.Cast<DataColumn>().ToDictionary(c => c.ColumnName, c => c.DataType);
+        //    }
+        //}
 
-        private Dictionary<string, string[]> _keys = new Dictionary<string, string[]>();
-        public Dictionary<string, string[]> CachedKeys
-        {
-            get { return _keys; }
-            set { _keys = value; }
-        }
+        public Dictionary<string, string[]> CachedKeys { get; set; } = new Dictionary<string, string[]>();
 
-        private Dictionary<string, Dictionary<string, Type>> _headers = new Dictionary<string, Dictionary<string, Type>>();
-        public Dictionary<string, Dictionary<string, string>> CachedHeaders
-        {
-            get { return _headers.ToDictionary(h => h.Key, h => h.Value.ToDictionary(k => k.Key, k => k.Value.FullName)); }
-            set { _headers = value.ToDictionary(h => h.Key, h => h.Value.ToDictionary(k => k.Key, k => Type.GetType(k.Value))); }
-        }
+        private Dictionary<string, List<ColumnDescription>> _headers = new Dictionary<string, List<ColumnDescription>>();
+        //public Dictionary<string, Dictionary<string, string>> CachedHeaders
+        //{
+        //    get { return _headers.ToDictionary(h => h.Key, h => h.Value.ToDictionary(k => k.Key, k => k.Value.FullName)); }
+        //    set { _headers = value.ToDictionary(h => h.Key, h => h.Value.ToDictionary(k => k.Key, k => Type.GetType(k.Value))); }
+        //}
 
         public new void RemoveCachedHeaders(string repository)
         {
-            if (_headers.ContainsKey(this.Name + "_" + repository))
-            {
-                _headers.Remove(this.Name + "_" + repository);
-            }
+            //if (_headers.ContainsKey(this.Name + "_" + repository))
+            //{
+            //    _headers.Remove(this.Name + "_" + repository);
+            //}
         }
 
-        public new Dictionary<string, Type> GetHeaders(string repository)
+        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
-            Dictionary<string, Type> ret;
+            List<ColumnDescription> ret;
 
             lock (_headers)
             {
                 if (!_headers.TryGetValue(this.Name + "_" + repository, out ret))
                 {
-                    DataTable tmp = new DataTable();
+                    var tmp = new DataTable();
                     if (Repositories.ContainsKey(repository))
                     {
                         using (var oda = ((IDBDataProvider)this).DataAdapterInstancer())
@@ -131,7 +129,7 @@ namespace Wokhan.Data.Providers.Bases
                         }
                     }
 
-                    ret = tmp.Columns.Cast<DataColumn>().ToDictionary(c => c.ColumnName, c => GetRealType(c));
+                    ret = tmp.Columns.Cast<DataColumn>().Select(c => new ColumnDescription { Name = c.ColumnName, Type = GetRealType(c) }).ToList();
                     _headers.Add(this.Name + "_" + repository, ret);
                 }
             }
@@ -139,7 +137,7 @@ namespace Wokhan.Data.Providers.Bases
             return ret;
         }
 
-        private Type GetRealType(DataColumn c)
+        public Type GetRealType(DataColumn c)
         {
             if (c.AllowDBNull && c.DataType.IsValueType)
             {
@@ -154,7 +152,6 @@ namespace Wokhan.Data.Providers.Bases
         Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
         public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes) where T : class
         {
-            var h = GetHeaders(repository);
 
             Type tx;
             lock (cachedTypes)
@@ -168,89 +165,18 @@ namespace Wokhan.Data.Providers.Bases
             
             var conn = ((IDBDataProvider)this).GetConnection();
 
-            var dbc = (IDynamicDbContext)Activator.CreateInstance(tx, conn, "DYNAMICSCHEMA", repository, h.Select(hd => hd.Key).ToArray());
+            var h = GetColumns(repository).Select(hd => hd.Name).ToArray();
+            var dbc = (IDynamicDbContext)Activator.CreateInstance(tx, conn, "DYNAMICSCHEMA", repository, h);
 
             dbc.basequery = (string)Repositories[repository];
 
             return (IQueryable<T>)dbc.GetSet().AsNoTracking();//.AsStreaming();
         }
 
-        public interface IDynamicDbContext
-        {
-            string table { get; set; }
-            string schema { get; set; }
-            string basequery { get; set; }
-
-            IQueryable GetSet();
-        }
+        
 
         //[DbConfigurationType("Wokhan.Data.Providers.DBDataProvider.DbConfigurationWrapper")]
-        public partial class DynamicDbContext<T, TK> : DbContext, IDynamicDbContext
-            where T : class
-            where TK : class
-        {
-          /*  public class DbConfigurationWrapper : DbConfiguration
-            {
-                public DbConfigurationWrapper()
-                {
-                    
-                }
-            }
-*/
-            private string[] keys;
-            public string table { get; set; }
-            public string schema { get; set; }
-            public string basequery { get; set; }
-
-            static DynamicDbContext()
-            {
-                Database.SetInitializer<DynamicDbContext<T, TK>>(null);
-            }
-
-            public DynamicDbContext(DbConnection cstring, string schema, string table, params string[] keys)
-                : base(cstring, true)
-            {
-                this.table = table;
-                this.keys = keys;
-                this.schema = schema;
-                this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-                this.Database.Connection.StateChange += Connection_StateChange;
-            }
-
-            private void Connection_StateChange(object sender, StateChangeEventArgs e)
-            {
-                /*if (e.OriginalState != ConnectionState.Open || e.CurrentState == ConnectionState.Open)
-                {
-                    this.Database.ExecuteSqlCommand("ALTER SESSION SET NLS_COMP = BINARY");
-                }*/
-            }
-
-            protected override void OnModelCreating(DbModelBuilder modelBuilder)
-            {
-                base.OnModelCreating(modelBuilder);
-
-                this.Configuration.AutoDetectChangesEnabled = false;
-                this.Configuration.ProxyCreationEnabled = false;
-                
-                modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-                
-                modelBuilder.HasDefaultSchema(schema);
-
-                ParameterExpression param = Expression.Parameter(typeof(T));
-                Expression<Func<T, long>> keyExpression = Expression.Lambda<Func<T, long>>(Expression.Property(param, "__UID"), param);
-
-                modelBuilder.Entity<T>().HasEntitySetName(table)
-                                        .ToTable("DYNAMICTABLE")
-                                        .HasKey(keyExpression);
-            }
-
-            public IQueryable GetSet()
-            {
-                this.Database.ExecuteSqlCommand("ALTER SESSION SET NLS_SORT = UNICODE_BINARY");
-                return this.Set<T>();
-            }
-        }
-
+        
         //public new IEnumerable<object[]> GetData(string repository, IEnumerable<string> attributes = null)
         //{
         //    DataTable ret = new DataTable();
@@ -302,7 +228,7 @@ namespace Wokhan.Data.Providers.Bases
 
                         cn.Open();
                         var res = oda.SelectCommand.ExecuteScalar();
-                        long ret = (long)((decimal)res);
+                        var ret = (long)((decimal)res);
                         cn.Close();
 
                         return ret;
@@ -320,19 +246,19 @@ namespace Wokhan.Data.Providers.Bases
         }
 
 
-        private IEnumerable<object[]> innerGetData(DbDataReader sdr)
-        {
-            while (sdr.Read())
-            {
-                object[] ot = new object[sdr.FieldCount];
+        //private IEnumerable<object[]> innerGetData(DbDataReader sdr)
+        //{
+        //    while (sdr.Read())
+        //    {
+        //        var ot = new object[sdr.FieldCount];
 
-                sdr.GetValues(ot);
+        //        sdr.GetValues(ot);
 
-                yield return ot;
-            }
+        //        yield return ot;
+        //    }
 
-            sdr.Close();
-        }
+        //    sdr.Close();
+        //}
 
 
         public new bool Test(out string details)
