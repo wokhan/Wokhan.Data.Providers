@@ -54,9 +54,9 @@ namespace Wokhan.Data.Providers.Contracts
         /// <returns></returns>
         Dictionary<string, object> GetDefaultRepositories();
 
-        [Obsolete]
+        /*[Obsolete]
         IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null);
-
+        */
         Dictionary<string, object> Repositories { get; set; }
 
         string[] RepositoriesColumnNames { get; set; }

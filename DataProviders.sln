@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.SqlSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.CSVDataProvider", "CSVDataProvider\Wokhan.Data.Providers.CSVDataProvider.csproj", "{45F2E80A-CB0E-4DFE-8819-F60997BC4E45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wokhan.Data.Providers.TIBCOMDMDataProvider", "TIBCOMDMDataProvider\Wokhan.Data.Providers.TIBCOMDMDataProvider.csproj", "{8529476C-DCAA-49F3-9997-0D6DCA63D23D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.TIBCOMDMDataProvider", "TIBCOMDMDataProvider\Wokhan.Data.Providers.TIBCOMDMDataProvider.csproj", "{8529476C-DCAA-49F3-9997-0D6DCA63D23D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

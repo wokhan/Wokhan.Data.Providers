@@ -95,7 +95,7 @@ namespace Wokhan.Data.Providers.Bases
                 keyType = typeof(string);
             }
             var m = this.GetType().GetMethod("GetTypedData").MakeGenericMethod(dataType, keyType);
-
+            
             return (IQueryable<dynamic>)m.Invoke(this, new object[] { repository, attributes });
         }
 
@@ -110,27 +110,27 @@ namespace Wokhan.Data.Providers.Bases
             return null;
         }
 
-        public IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null)
-        {
-            return null;
-        }
-        /*
-        private IQueryable<dynamic> GetDataRecursive(SearchOptions init, Dictionary<string, SearchOptions> searchRep)
-        {
-            var query = GetData(init.Key, init.Value.Attributes);
-            foreach (var rel in init.Value.Relations)
-            {
-                if (searchRep.TryGetValue(rel.Target, out var next))
-                {
-                    query = query.Join(GetDataRecursive(rel, searchRep), rel.)
-                }
-                else
-                {
-                    query = query.Join(GetData(rel.Target), rel.SourceAttribute, rel.TargetAttribute, "new(inner, outer)", null);
-                }
-            }
+        //public IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null)
+        //{
+        //    return null;
+        //}
 
-        }*/
+        //private IQueryable<dynamic> GetDataRecursive(KeyValuePair<string, SearchOptions> init, Dictionary<string, SearchOptions> searchRep)
+        //{
+        //    var query = GetData(init.Key, init.Value.Attributes);
+        //    foreach (var rel in init.Value.Relations)
+        //    {
+        //        if (searchRep.TryGetValue(rel.Target, out var next))
+        //        {
+        //            query = query.Join(GetDataRecursive(rel, searchRep), rel.)
+        //        }
+        //        else
+        //        {
+        //            query = query.Join(GetData(rel.Target), rel.SourceAttribute, rel.TargetAttribute, "new(inner, outer)", null);
+        //        }
+        //    }
+
+        //}
 
 
         public long Monitor(string key, string repository, out object data, string filter = null, string attribute = null)

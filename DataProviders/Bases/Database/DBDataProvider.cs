@@ -58,7 +58,7 @@ namespace Wokhan.Data.Providers.Bases
             return ((DataColumn)srcAttribute).ColumnName;
         }
 
-        public new IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null)
+        /*public new IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null)
         {
             var tmp = new DataTable();
             if (Repositories.ContainsKey(repository))
@@ -80,7 +80,7 @@ namespace Wokhan.Data.Providers.Bases
                 }
             }
             return tmp.DefaultView;
-        }
+        }*/
 
         //public new Dictionary<string, Type> GetColumns(string repository, IList<string> names = null)
         //{
