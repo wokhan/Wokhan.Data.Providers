@@ -69,37 +69,37 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        private static IEnumerable<DataProviderStruct> _cachedProviders = null;
+        public static void Init(string basePath)
+        {
+            externalProviders = GetExternal(basePath);
+        }
+
+
+        private static DataProviderStruct[] externalProviders = new DataProviderStruct[0];
+        private static DataProviderStruct[] embeddedProviders = new DataProviderStruct[0];
+
         public static IEnumerable<DataProviderStruct> AllProviders
         {
             get
             {
-                if (_cachedProviders == null)
+                if (embeddedProviders == null)
                 {
-                    DataProviderStruct[] embeddedProviders = GetEmbedded();
-
-                    DataProviderStruct[] externalProviders = GetExternal();
-
-                    _cachedProviders = embeddedProviders.Concat(externalProviders).ToArray();
+                    embeddedProviders = GetEmbedded();
                 }
 
-                return _cachedProviders;
+                return embeddedProviders.Concat(externalProviders);
             }
         }
 
-        private static DataProviderStruct[] GetExternal()
+        private static DataProviderStruct[] GetExternal(string basePath)
         {
-            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\providers"))
+            if (!Directory.Exists(basePath))
             {
-                try
-                {
-                    Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "\\providers");
-                }
-                catch { }
+                throw new DirectoryNotFoundException(basePath);
             }
             else
             {
-                var external = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "\\providers", "*.dll")
+                var external = Directory.GetFiles(basePath, "*.dll")
                                         .SelectMany(f =>
                                         {
                                             try
@@ -127,8 +127,6 @@ namespace Wokhan.Data.Providers
                        })
                        .ToArray();
             }
-
-            return new DataProviderStruct[0];
         }
 
         private static DataProviderStruct[] GetEmbedded()
