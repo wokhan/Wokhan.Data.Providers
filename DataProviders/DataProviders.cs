@@ -99,12 +99,13 @@ namespace Wokhan.Data.Providers
             }
             else
             {
+                var loadContext = new DataProviderLoadContext(basePath);
                 var external = Directory.GetFiles(basePath, "*.dll")
                                         .SelectMany(f =>
                                         {
                                             try
                                             {
-                                                return Assembly.LoadFrom(f).GetTypes();
+                                                return loadContext.LoadFromAssemblyPath(f).GetTypes();
                                             }
                                             catch (Exception e)
                                             {
@@ -138,20 +139,7 @@ namespace Wokhan.Data.Providers
                             .Select(t => new DataProviderStruct() { IsExternal = false, Description = t.Attributes.Description, Name = t.Attributes.Name, Category = t.Attributes.Category, Copyright = t.Attributes.Copyright, IconPath = t.Attributes.Icon, Type = t.Type }).ToArray();
         }
 
-        public static class MonitoringModes
-        {
-            internal const string COUNTALL = nameof(COUNTALL);
-            internal const string PING = nameof(PING);
-            internal const string CHECKVAL = nameof(CHECKVAL);
-            internal const string PERF = nameof(PERF);
-        }
 
-        public static readonly Dictionary<string, string> MonitoringTypes = new Dictionary<string, string> {
-            { MonitoringModes.COUNTALL, "Count" },
-            { MonitoringModes.CHECKVAL, "Retrieve attributes values" },
-            { MonitoringModes.PERF, "Performance check" },
-            { MonitoringModes.PING, "Server ping" }
-            //{ "Any modification", "CHECKMOD" },
-        };
+
     }
 }

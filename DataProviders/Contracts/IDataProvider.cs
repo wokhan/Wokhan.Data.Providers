@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -60,12 +59,5 @@ namespace Wokhan.Data.Providers.Contracts
         Dictionary<string, object> Repositories { get; set; }
 
         string[] RepositoriesColumnNames { get; set; }
-
-        long Monitor(string key, string repository, out object data, string filter = null, string attribute = null);
-
-        long Ping(string host);
-
-        long PerfTest(string repository);
-
     }
 }

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Wokhan.Core.Extensions;
-using Wokhan.Data.Providers;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 

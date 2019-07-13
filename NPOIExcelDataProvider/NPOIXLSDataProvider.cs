@@ -1,12 +1,11 @@
-﻿using System;
+﻿using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
 using System.Collections.Generic;
 using System.Linq;
-using NPOI.SS.UserModel;
-using NPOI.HSSF.UserModel;
+using Wokhan.Collections.Extensions;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
-using Wokhan.Collections.Extensions;
 
 namespace Wokhan.Data.Providers
 {
@@ -74,7 +73,7 @@ namespace Wokhan.Data.Providers
             if (!cachedHeaders.ContainsKey(repository))
             {
                 var ret = new List<ColumnDescription>();
-            
+
                 var rep = (string)GetDefaultRepositories()[repository];
 
                 var wb = WorkbookFactory.Create(File);
@@ -95,7 +94,7 @@ namespace Wokhan.Data.Providers
 
                 cachedHeaders.Add(repository, ret);
             }
-            
+
             return cachedHeaders[repository];
         }
 

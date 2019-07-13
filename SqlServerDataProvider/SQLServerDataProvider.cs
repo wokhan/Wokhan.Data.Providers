@@ -9,7 +9,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright="Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
     public class SQLServerDataProvider : DBDataProvider, IDBDataProvider, IExposedDataProvider
     {
 
@@ -26,7 +26,7 @@ namespace Wokhan.Data.Providers
         public new Dictionary<string, object> GetDefaultRepositories()
         {
             var ret = new Dictionary<string, object>();
-            
+
             using (var conn = new SqlConnection(this.ConnectionString))
             {
                 conn.Open();
@@ -37,7 +37,7 @@ namespace Wokhan.Data.Providers
                     while (sdr.Read())
                     {
                         var qry = String.Join(", ", GetColumns(sdr[0].ToString()).Select(h => h.Name));
-                        val = sdr[0].ToString() + "." + sdr[1].ToString(); 
+                        val = sdr[0].ToString() + "." + sdr[1].ToString();
                         ret.Add(val, "SELECT " + qry + " FROM " + val);
                     }
                 }

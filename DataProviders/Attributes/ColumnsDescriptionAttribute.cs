@@ -6,7 +6,7 @@ namespace Wokhan.Data.Providers.Attributes
     class ColumnsDescriptionAttribute : Attribute
     {
         public string[] Headers;
-        
+
         public ColumnsDescriptionAttribute(params string[] headers) { }
     }
 }

@@ -1,12 +1,12 @@
-﻿using Wokhan.Data.Providers.Attributes;
-using Wokhan.Data.Providers.Bases;
-using Wokhan.Data.Providers.Contracts;
+﻿using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Oracle.ManagedDataAccess.Client;
 using System.Data.Common;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Wokhan.Data.Providers.Attributes;
+using Wokhan.Data.Providers.Bases;
+using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {

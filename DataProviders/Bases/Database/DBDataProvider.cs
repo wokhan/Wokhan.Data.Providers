@@ -1,16 +1,13 @@
-﻿using Wokhan.Data.Providers.Attributes;
-using Wokhan.Data.Providers.Contracts;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Data.Entity.Infrastructure.Interception;
+using System.Linq;
+using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases.Database;
+using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.Bases
 {
@@ -35,11 +32,11 @@ namespace Wokhan.Data.Providers.Bases
         public string Password { get; set; }
 
         [ProviderParameter("Globally excluded columns", true, ExclusionGroup = "Advanced", Position = 60)]
-        public string[] HiddenFields{ get; set; }
+        public string[] HiddenFields { get; set; }
 
         public Dictionary<string, string> TODOColumnsRelAttributes { get; private set; }
-        public Dictionary<string, string>  TODOColumnsHidden { get; private set; }
-        public List<string>  TODORepositoryRel { get; private set; }
+        public Dictionary<string, string> TODOColumnsHidden { get; private set; }
+        public List<string> TODORepositoryRel { get; private set; }
         public List<string> TODORelationSoftLink { get; private set; }
         public List<string> TODORelationCartesian { get; private set; }
 
@@ -162,7 +159,7 @@ namespace Wokhan.Data.Providers.Bases
                     cachedTypes.Add(repository, tx);
                 }
             }
-            
+
             var conn = ((IDBDataProvider)this).GetConnection();
 
             var h = GetColumns(repository).Select(hd => hd.Name).ToArray();
@@ -173,10 +170,10 @@ namespace Wokhan.Data.Providers.Bases
             return (IQueryable<T>)dbc.GetSet().AsNoTracking();//.AsStreaming();
         }
 
-        
+
 
         //[DbConfigurationType("Wokhan.Data.Providers.DBDataProvider.DbConfigurationWrapper")]
-        
+
         //public new IEnumerable<object[]> GetData(string repository, IEnumerable<string> attributes = null)
         //{
         //    DataTable ret = new DataTable();

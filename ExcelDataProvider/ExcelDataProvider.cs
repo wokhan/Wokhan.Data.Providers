@@ -1,13 +1,12 @@
-﻿using Wokhan.Data.Providers.Attributes;
+﻿using ExcelDataReader;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using Wokhan.Collections.Extensions;
+using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Data;
-using ExcelDataReader;
-using Wokhan.Collections.Extensions;
 
 namespace Wokhan.Data.Providers
 {
