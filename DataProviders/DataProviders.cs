@@ -71,7 +71,7 @@ namespace Wokhan.Data.Providers
 
         public static void Init(string basePath)
         {
-            externalProviders = GetExternal(basePath);
+            externalProviders = externalProviders.Concat(GetExternal(basePath)).ToArray();
         }
 
 
