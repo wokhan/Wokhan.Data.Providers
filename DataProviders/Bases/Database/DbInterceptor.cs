@@ -33,7 +33,7 @@ namespace Wokhan.Data.Providers.Bases
             var ictxt = interceptionContext.DbContexts.First() as IDynamicDbContext;
             if (ictxt != null)
             {
-                command.CommandText = Regex.Replace(command.CommandText.Replace("\"DYNAMICSCHEMA\".\"DYNAMICTABLE\"", " ( " + ictxt.basequery + " ) "), "\".*?\"\\.\"__UID\"", "ROWNUM");
+                command.CommandText = Regex.Replace(command.CommandText.Replace("\"DYNAMICSCHEMA\".\"DYNAMICTABLE\"", " ( " + ictxt.BaseQuery + " ) "), "\".*?\"\\.\"__UID\"", "ROWNUM");
             }
         }
 

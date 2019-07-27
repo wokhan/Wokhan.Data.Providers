@@ -1,12 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Data;
+using System.Linq;
 
 namespace Wokhan.Data.Providers.Bases.Database
 {
     public interface IDynamicDbContext
     {
-        string table { get; set; }
-        string schema { get; set; }
-        string basequery { get; set; }
+        string Table { get; set; }
+        string Schema { get; set; }
+        string BaseQuery { get; set; }
+
+        event Action<string> LogAction;
+
+        event StateChangeEventHandler ConnectionStateChange;
 
         IQueryable GetSet();
     }

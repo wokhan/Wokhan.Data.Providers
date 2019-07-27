@@ -21,31 +21,27 @@ namespace Wokhan.Data.Providers.Bases.Database
           }
 */
         private string[] keys;
-        public string table { get; set; }
-        public string schema { get; set; }
-        public string basequery { get; set; }
+        public string Table { get; set; }
+        public string Schema { get; set; }
+        public string BaseQuery { get; set; }
+
+        public event Action<string> LogAction;
+
+        public event StateChangeEventHandler ConnectionStateChange;
 
         static DynamicDbContext()
         {
-            System.Data.Entity.Database.SetInitializer<DynamicDbContext<T, TK>>(new NullDatabaseInitializer<DynamicDbContext<T, TK>>());
+            System.Data.Entity.Database.SetInitializer(new NullDatabaseInitializer<DynamicDbContext<T, TK>>());
         }
 
         public DynamicDbContext(DbConnection cstring, string schema, string table, params string[] keys)
             : base(cstring, true)
         {
-            this.table = table;
+            this.Table = table;
             this.keys = keys;
-            this.schema = schema;
-            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-            this.Database.Connection.StateChange += Connection_StateChange;
-        }
-
-        private void Connection_StateChange(object sender, StateChangeEventArgs e)
-        {
-            /*if (e.OriginalState != ConnectionState.Open || e.CurrentState == ConnectionState.Open)
-            {
-                this.Database.ExecuteSqlCommand("ALTER SESSION SET NLS_COMP = BINARY");
-            }*/
+            this.Schema = schema;
+            this.Database.Log += LogAction;
+            this.Database.Connection.StateChange += ConnectionStateChange;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -57,12 +53,12 @@ namespace Wokhan.Data.Providers.Bases.Database
 
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            modelBuilder.HasDefaultSchema(schema);
+            modelBuilder.HasDefaultSchema(Schema);
 
             ParameterExpression param = Expression.Parameter(typeof(T));
             var keyExpression = Expression.Lambda<Func<T, long>>(Expression.Property(param, "__UID"), param);
 
-            modelBuilder.Entity<T>().HasEntitySetName(table)
+            modelBuilder.Entity<T>().HasEntitySetName(Table)
                                     .ToTable("DYNAMICTABLE")
                                     .HasKey(keyExpression);
         }

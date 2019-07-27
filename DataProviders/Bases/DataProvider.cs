@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Runtime.Serialization;
@@ -70,7 +71,7 @@ namespace Wokhan.Data.Providers.Bases
         /// <param name="attributes">Attributes (amongst repository's ones)</param>
         /// <param name="keys">Unused</param>
         /// <returns></returns>
-        public sealed override IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null)
+        public sealed override IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null)
         {
             var dataType = ((IDataProvider)this).GetTypedClass(repository);
             Type keyType;
@@ -93,11 +94,18 @@ namespace Wokhan.Data.Providers.Bases
             }
             var m = this.GetType().GetMethod("GetTypedData").MakeGenericMethod(dataType, keyType);
 
-            return (IQueryable<dynamic>)m.Invoke(this, new object[] { repository, attributes });
+            var sw = Stopwatch.StartNew();
+
+            var data = (IQueryable<dynamic>)m.Invoke(this, new object[] { repository, attributes, statisticsBag });
+
+            sw.Stop();
+            statisticsBag?.Add("TOTAL_INVOKE", sw.ElapsedMilliseconds);
+
+            return data;
         }
 
 
-        public IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes) where T : class
+        public IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
         {
             return null;
         }

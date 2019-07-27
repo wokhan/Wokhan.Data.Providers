@@ -126,7 +126,7 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes) where T : class
+        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
         {
             return _getdata<T>(repository, attributes.ToArray()).AsQueryable();
         }

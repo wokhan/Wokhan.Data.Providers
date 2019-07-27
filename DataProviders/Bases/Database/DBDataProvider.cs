@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure.Interception;
+using System.Diagnostics;
 using System.Linq;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases.Database;
@@ -147,9 +148,9 @@ namespace Wokhan.Data.Providers.Bases
         }
 
         Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
-        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes) where T : class
+        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
         {
-
+            var sw = Stopwatch.StartNew();
             Type tx;
             lock (cachedTypes)
             {
@@ -159,18 +160,18 @@ namespace Wokhan.Data.Providers.Bases
                     cachedTypes.Add(repository, tx);
                 }
             }
-
+            
             var conn = ((IDBDataProvider)this).GetConnection();
 
             var h = GetColumns(repository).Select(hd => hd.Name).ToArray();
             var dbc = (IDynamicDbContext)Activator.CreateInstance(tx, conn, "DYNAMICSCHEMA", repository, h);
-
-            dbc.basequery = (string)Repositories[repository];
+            
+            dbc.BaseQuery = (string)Repositories[repository];
+            sw.Stop();
+            statisticsBag?.Add("PREPARE", sw.ElapsedMilliseconds);
 
             return (IQueryable<T>)dbc.GetSet().AsNoTracking();//.AsStreaming();
         }
-
-
 
         //[DbConfigurationType("Wokhan.Data.Providers.DBDataProvider.DbConfigurationWrapper")]
 

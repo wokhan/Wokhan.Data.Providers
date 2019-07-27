@@ -13,7 +13,7 @@ namespace Wokhan.Data.Providers.Bases
 
         protected abstract long Count(string repository = null);
 
-        public abstract IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null);
+        public abstract IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null);
 
     }
 }

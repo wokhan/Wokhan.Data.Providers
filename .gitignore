@@ -19,3 +19,6 @@
 /SqlServerDataProvider/obj
 /TIBCOMDMDataProvider/obj
 /TIBCOMDMDataProvider/bin/Debug/netcoreapp3.0
+/Wokhan.Data.Providers.HttpDataProvider/bin/Debug/netcoreapp3.0
+/Wokhan.Data.Providers.HttpDataProvider/obj
+/OracleManagedDataProvider/bin
