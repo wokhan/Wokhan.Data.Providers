@@ -22,3 +22,7 @@
 /Wokhan.Data.Providers.HttpDataProvider/bin/Debug/netcoreapp3.0
 /Wokhan.Data.Providers.HttpDataProvider/obj
 /OracleManagedDataProvider/bin
+/LdapDataProvider/bin/Debug/netcoreapp3.0
+/LdapDataProvider/obj
+/Wokhan.Data.Providers.CLI/bin/Debug/netcoreapp3.0
+/Wokhan.Data.Providers.CLI/obj

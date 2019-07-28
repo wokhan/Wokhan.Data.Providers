@@ -5,7 +5,7 @@ using Wokhan.Data.Providers.Attributes;
 
 namespace Wokhan.Data.Providers.Bases
 {
-    public class FileDataProvider : DataProvider
+    public abstract class FileDataProvider : DataProvider
     {
         protected Encoding _encoding = UTF8Encoding.UTF8;
         [ProviderParameter("Encoding", false, typeof(FileDataProvider), "GetEncoding")]
@@ -21,11 +21,11 @@ namespace Wokhan.Data.Providers.Bases
             set { }
         }
 
-        public new string[] RepositoriesColumnNames
+        /*public new string[] RepositoriesColumnNames
         {
             get { return new[] { "Identifier", "Full path" }; }
             set { }
-        }
+        }*/
         public new Dictionary<string, object> GetDefaultRepositories()
         {
             // Change for an interface implementing Filter

@@ -5,12 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.Bases
 {
     [DataContract]
-    public class DataProvider : AbstractDataProvider, IDataProvider
+    public abstract class DataProvider : AbstractDataProvider, IDataProvider
     {
         [DataMember]
         public string Name { get; set; }
@@ -34,11 +35,11 @@ namespace Wokhan.Data.Providers.Bases
             set { _repositories = value.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value); }
         }
 
-        public string[] RepositoriesColumnNames
+        /*public string[] RepositoriesColumnNames
         {
             get { return new[] { "Key", "Value" }; }
             set { }
-        }
+        }*/
 
         public void RemoveCachedHeaders(string repository)
         {
@@ -71,7 +72,7 @@ namespace Wokhan.Data.Providers.Bases
         /// <param name="attributes">Attributes (amongst repository's ones)</param>
         /// <param name="keys">Unused</param>
         /// <returns></returns>
-        public sealed override IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, IList<Dictionary<string, string>> values = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null)
         {
             var dataType = ((IDataProvider)this).GetTypedClass(repository);
             Type keyType;
@@ -92,7 +93,7 @@ namespace Wokhan.Data.Providers.Bases
             {
                 keyType = typeof(string);
             }
-            var m = this.GetType().GetMethod("GetTypedData").MakeGenericMethod(dataType, keyType);
+            var m = this.GetType().GetMethod(nameof(GetTypedData)).MakeGenericMethod(dataType, keyType);
 
             var sw = Stopwatch.StartNew();
 
@@ -104,10 +105,17 @@ namespace Wokhan.Data.Providers.Bases
             return data;
         }
 
-
-        public IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
+        /*public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
         {
             return null;
+        }*/
+
+        protected string updateValue(string src, IList<Dictionary<string, string>> values)
+        {
+            if (values == null)
+                return src;
+
+            return Regex.Replace(src, @"\$([^\d]*)(\d*)\$", m => values[int.TryParse(m.Groups[2].Value, out int res) ? res : 0][m.Groups[1].Value], RegexOptions.Compiled);
         }
 
         public Dictionary<string, object> GetDefaultRepositories()

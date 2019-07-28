@@ -148,7 +148,7 @@ namespace Wokhan.Data.Providers.Bases
         }
 
         Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
-        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
+        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
         {
             var sw = Stopwatch.StartNew();
             Type tx;

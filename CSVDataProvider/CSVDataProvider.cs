@@ -13,38 +13,18 @@ namespace Wokhan.Data.Providers
     [DataProvider(Category = "Files", Name = "CSV", Description = "Allows to load data from CSV or DSV files.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/CSV.png")]
     public class CSVDataProvider : FileDataProvider, IDataProvider, IExposedDataProvider
     {
-        private string _delimiter = ";";
         [ProviderParameter("Delimiter")]
-        public string Delimiter
-        {
-            get { return _delimiter; }
-            set { _delimiter = value; }
-        }
+        public string Delimiter { get; set; } = ";";
 
-        private bool _usequotes = true;
         [ProviderParameter("Use quotes to enclose fields")]
-        public bool UseQuotes
-        {
-            get { return _usequotes; }
-            set { _usequotes = value; }
-        }
+        public bool UseQuotes { get; set; } = true;
 
-        private bool _hasheader = true;
         [ProviderParameter("Source file contains header")]
-        public bool Hasheader
-        {
-            get { return _hasheader; }
-            set { _hasheader = value; }
-        }
+        public bool Hasheader { get; set; } = true;
 
-
-        private bool _mergeFiles = true;
         [ProviderParameter("Merge all selected files")]
-        public bool MergeFiles
-        {
-            get { return _mergeFiles; }
-            set { _mergeFiles = value; }
-        }
+        public bool MergeFiles { get; set; } = true;
+
         public new string FileFilter
         {
             get { return "CSV files|*.csv"; }
@@ -69,8 +49,8 @@ namespace Wokhan.Data.Providers
                 if (!_headers.TryGetValue(repository, out ret))
                 {
                     var csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
-                    csvParser.Delimiters = new[] { this._delimiter };
-                    csvParser.HasFieldsEnclosedInQuotes = this._usequotes;
+                    csvParser.Delimiters = new[] { this.Delimiter };
+                    csvParser.HasFieldsEnclosedInQuotes = this.UseQuotes;
 
                     var fields = csvParser.ReadFields();
                     if (this.Hasheader)
@@ -100,7 +80,7 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
+        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             if (MergeFiles)
             {
@@ -116,8 +96,8 @@ namespace Wokhan.Data.Providers
         private IQueryable<T> __GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, bool ignoreHeader) where T : class
         {
             var csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
-            csvParser.Delimiters = new[] { this._delimiter };
-            csvParser.HasFieldsEnclosedInQuotes = this._usequotes;
+            csvParser.Delimiters = new[] { this.Delimiter };
+            csvParser.HasFieldsEnclosedInQuotes = this.UseQuotes;
 
             //try
             {

@@ -43,9 +43,9 @@ namespace Wokhan.Data.Providers.Contracts
         [Obsolete("Should be replaced by IQueryable Linq statements")]
         DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly);
 
-        IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null);
+        IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, IList<Dictionary<string, string>> values = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null);
 
-        IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class;
+        //IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
 
         /// <summary>
         /// Retrieves all repositories along with the query to access each of them
@@ -58,6 +58,6 @@ namespace Wokhan.Data.Providers.Contracts
         */
         Dictionary<string, object> Repositories { get; set; }
 
-        string[] RepositoriesColumnNames { get; set; }
+        //string[] RepositoriesColumnNames { get; set; }
     }
 }

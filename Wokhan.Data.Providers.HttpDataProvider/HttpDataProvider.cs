@@ -26,21 +26,13 @@ namespace Wokhan.Data.Providers.HttpDataProvider
         public int Timeout { get; set; } = 20000;
         public Dictionary<string, string> Headers { get; set; }
 
-        public new IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, Dictionary<string, long> statisticsBag = null) where T : class
+        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
         {
             var sw = new Stopwatch();
 
             string proxy = null;
-            string localurl = this.Url;
-            string localbody = null;
-
-            /*if (values != null)
-                        {
-                            localurl = Regex.Replace(this.Url, @"\$([^\d]*)(\d*)\$", m => values[int.TryParse(m.Groups[2].Value, out int res) ? res : 0][m.Groups[1].Value]);
-                        }*/
-
-            /*Ping pong = new Ping();
-            pong.Send(localurl).RoundtripTime.Dump("Ping");*/
+            string localurl = updateValue(this.Url, values);
+            string localbody = updateValue(this.Body, values);
 
             var req = (HttpWebRequest)WebRequest.Create(localurl);
             req.ServicePoint.ConnectionLimit = 100;
@@ -70,15 +62,7 @@ namespace Wokhan.Data.Providers.HttpDataProvider
             if (this.Body != null)
             {
                 sw.Restart();
-                /*if (values != null)
-                {
-                    localbody = Regex.Replace(this.Body, @"\$([^\d]*)(\d*)\$", m => values[int.TryParse(m.Groups[2].Value, out int res) ? res : 0][m.Groups[1].Value]);
-                }
-                else
-                */
-                {
-                    localbody = this.Body;
-                }
+
                 var bytes = Encoding.UTF8.GetBytes(localbody);
                 req.ContentLength = bytes.Length;
 
