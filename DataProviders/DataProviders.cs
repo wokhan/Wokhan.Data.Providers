@@ -69,14 +69,39 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        public static void Init(string basePath)
+        public static void AddFromPath(string basePath)
         {
             externalProviders = externalProviders.Concat(GetExternal(basePath)).ToArray();
         }
 
+        public static void AddAssemblies(params Assembly[] assemblies)
+        {
+            additionalProviders = additionalProviders.Concat(ExtractFromAssemblies(assemblies)).ToArray();
+        }
+
+        private static DataProviderStruct[] ExtractFromAssemblies(params Assembly[] assemblies)
+        {
+            return assemblies.SelectMany(a => a.GetTypes())
+                .Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
+                   .Select(t => new { External = true, Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
+                   .Select(t => new DataProviderStruct()
+                   {
+                       IsExternal = true,
+                       Description = t.Attributes.Description,
+                       Name = t.Attributes.Name,
+                       Category = t.Attributes.Category,
+                       Copyright = t.Attributes.Copyright,
+                       IconPath = t.Attributes.Icon,
+                       Type = t.Type,
+                       IsDirectlyBindable = t.Attributes.IsDirectlyBindable
+                   })
+                   .ToArray();
+
+        }
 
         private static DataProviderStruct[] externalProviders = new DataProviderStruct[0];
         private static DataProviderStruct[] embeddedProviders = new DataProviderStruct[0];
+        private static DataProviderStruct[] additionalProviders = new DataProviderStruct[0];
 
         public static IEnumerable<DataProviderStruct> AllProviders
         {
@@ -87,7 +112,7 @@ namespace Wokhan.Data.Providers
                     embeddedProviders = GetEmbedded();
                 }
 
-                return embeddedProviders.Concat(externalProviders);
+                return embeddedProviders.Concat(externalProviders).Concat(additionalProviders);
             }
         }
 
@@ -101,45 +126,27 @@ namespace Wokhan.Data.Providers
             {
                 var loadContext = new DataProviderLoadContext(basePath);
                 var external = Directory.GetFiles(basePath, "*.dll")
-                                        .SelectMany(f =>
+                                        .Select(f =>
                                         {
                                             try
                                             {
-                                                return loadContext.LoadFromAssemblyPath(f).GetTypes();
+                                                return loadContext.LoadFromAssemblyPath(f);
                                             }
                                             catch (Exception e)
                                             {
-                                                return new Type[0];
+                                                return null;
                                             }
-                                        });
+                                        })
+                                        .Where(_ => _ != null)
+                                        .ToArray();
 
-                return external.Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
-                       .Select(t => new { External = true, Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
-                       .Select(t => new DataProviderStruct()
-                       {
-                           IsExternal = true,
-                           Description = t.Attributes.Description,
-                           Name = t.Attributes.Name,
-                           Category = t.Attributes.Category,
-                           Copyright = t.Attributes.Copyright,
-                           IconPath = t.Attributes.Icon,
-                           Type = t.Type,
-                           IsDirectlyBindable = t.Attributes.IsDirectlyBindable
-                       })
-                       .ToArray();
+                return ExtractFromAssemblies(external);
             }
         }
 
         private static DataProviderStruct[] GetEmbedded()
         {
-            return Assembly.GetExecutingAssembly()
-                            .GetTypes()
-                            .Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
-                            .Select(t => new { External = false, Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
-                            .Select(t => new DataProviderStruct() { IsExternal = false, Description = t.Attributes.Description, Name = t.Attributes.Name, Category = t.Attributes.Category, Copyright = t.Attributes.Copyright, IconPath = t.Attributes.Icon, Type = t.Type }).ToArray();
+            return ExtractFromAssemblies(Assembly.GetExecutingAssembly());
         }
-
-
-
     }
 }
