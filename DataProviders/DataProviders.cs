@@ -74,19 +74,31 @@ namespace Wokhan.Data.Providers
             externalProviders = externalProviders.Concat(GetExternal(basePath)).ToArray();
         }
 
-        public static void AddAssemblies(params Assembly[] assemblies)
+        public static void ScanAssemblies(params Assembly[] assemblies)
         {
-            additionalProviders = additionalProviders.Concat(ExtractFromAssemblies(assemblies)).ToArray();
+            additionalProviders = additionalProviders.Concat(ExtractFromAssemblies(false, assemblies)).ToArray();
         }
 
-        private static DataProviderStruct[] ExtractFromAssemblies(params Assembly[] assemblies)
+        public static void AddProviderTypes(params Type[] types )
         {
-            return assemblies.SelectMany(a => a.GetTypes())
-                .Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
-                   .Select(t => new { External = true, Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
+            if (types.Any(t => !t.IsClass || typeof(IExposedDataProvider).IsAssignableFrom(t)))
+            {
+                throw new ArgumentException("Provider types must inherit from DataProvider and implement IExposedDataProvider)");
+            }
+            additionalProviders = additionalProviders.Concat(AddTypes(true, types)).ToArray();
+        }
+        private static DataProviderStruct[] ExtractFromAssemblies(bool external, params Assembly[] assemblies)
+        {
+            return AddTypes(external, assemblies.SelectMany(a => a.GetTypes()).ToArray());
+        }
+
+        private static DataProviderStruct[] AddTypes(bool external, params Type[] types)
+        {
+            return types.Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
+                   .Select(t => new { Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
                    .Select(t => new DataProviderStruct()
                    {
-                       IsExternal = true,
+                       IsExternal = external,
                        Description = t.Attributes.Description,
                        Name = t.Attributes.Name,
                        Category = t.Attributes.Category,
@@ -96,7 +108,6 @@ namespace Wokhan.Data.Providers
                        IsDirectlyBindable = t.Attributes.IsDirectlyBindable
                    })
                    .ToArray();
-
         }
 
         private static DataProviderStruct[] externalProviders = new DataProviderStruct[0];
@@ -140,13 +151,13 @@ namespace Wokhan.Data.Providers
                                         .Where(_ => _ != null)
                                         .ToArray();
 
-                return ExtractFromAssemblies(external);
+                return ExtractFromAssemblies(true, external);
             }
         }
 
         private static DataProviderStruct[] GetEmbedded()
         {
-            return ExtractFromAssemblies(Assembly.GetExecutingAssembly());
+            return ExtractFromAssemblies(false, Assembly.GetExecutingAssembly());
         }
     }
 }
