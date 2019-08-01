@@ -69,23 +69,23 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        public static void AddFromPath(string basePath)
+        public static void AddPath(string basePath)
         {
             externalProviders = externalProviders.Concat(GetExternal(basePath)).ToArray();
         }
 
-        public static void ScanAssemblies(params Assembly[] assemblies)
+        public static void AddAssemblies(params Assembly[] assemblies)
         {
             additionalProviders = additionalProviders.Concat(ExtractFromAssemblies(false, assemblies)).ToArray();
         }
 
-        public static void AddProviderTypes(params Type[] types )
+        public static void AddTypes(params Type[] types )
         {
             if (types.Any(t => !t.IsClass || typeof(IExposedDataProvider).IsAssignableFrom(t)))
             {
                 throw new ArgumentException("Provider types must inherit from DataProvider and implement IExposedDataProvider)");
             }
-            additionalProviders = additionalProviders.Concat(AddTypes(true, types)).ToArray();
+            additionalProviders = additionalProviders.Concat(AddTypes(false, types)).ToArray();
         }
         private static DataProviderStruct[] ExtractFromAssemblies(bool external, params Assembly[] assemblies)
         {
