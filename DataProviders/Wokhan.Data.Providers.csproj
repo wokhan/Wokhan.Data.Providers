@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Attributes\ColumnsDescriptionAttribute.cs" />
     <Compile Remove="CSVDataProvider.cs" />
     <Compile Remove="DemoCSVDataProvider.cs" />
     <Compile Remove="FileCollectionProvider.cs" />
