@@ -27,13 +27,15 @@ namespace Wokhan.Data.Providers
             set;
         }
 
+        public override Dictionary<string, string> MonitoringTypes => throw new System.NotImplementedException();
+
         public ExcelDataProvider() : base() { }
 
-        public new void RemoveCachedHeaders(string repository)
+        public override void InvalidateColumnsCache(string repository)
         {
-            if (cachedHeaders.ContainsKey(repository))
+            if (cachedColumns.ContainsKey(repository))
             {
-                cachedHeaders.Remove(repository);
+                cachedColumns.Remove(repository);
             }
         }
 
@@ -45,10 +47,10 @@ namespace Wokhan.Data.Providers
             }
         };
 
-        private Dictionary<string, List<ColumnDescription>> cachedHeaders = new Dictionary<string, List<ColumnDescription>>();
-        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        private Dictionary<string, List<ColumnDescription>> cachedColumns = new Dictionary<string, List<ColumnDescription>>();
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
-            if (!cachedHeaders.ContainsKey(repository))
+            if (!cachedColumns.ContainsKey(repository))
             {
                 var rep = (string)GetDefaultRepositories()[repository];
 
@@ -59,16 +61,16 @@ namespace Wokhan.Data.Providers
                         reader.NextResult();
                     }
 
-                    cachedHeaders.Add(repository, reader.AsDataSet(defaultConf).Tables[rep].Columns.Cast<DataColumn>()
+                    cachedColumns.Add(repository, reader.AsDataSet(defaultConf).Tables[rep].Columns.Cast<DataColumn>()
                                                           .Select(c => new ColumnDescription() { Name = c.ColumnName, Type = c.DataType })
                                                           .ToList());
                 }
             }
 
-            return cachedHeaders[repository];
+            return cachedColumns[repository];
         }
 
-        public new Dictionary<string, object> GetDefaultRepositories()
+        public override Dictionary<string, object> GetDefaultRepositories()
         {
             var ret = new Dictionary<string, object>();
             using (var reader = getReader())
@@ -99,7 +101,7 @@ namespace Wokhan.Data.Providers
         //    }
         //}
 
-        public new bool Test(out string details)
+        public override bool Test(out string details)
         {
             if (!System.IO.File.Exists(File))
             {
@@ -160,7 +162,6 @@ namespace Wokhan.Data.Providers
                 }
             }
         }
-
 
         //public virtual DbSet<T> CATALOG { get; set; }
     }

@@ -34,7 +34,7 @@ namespace Wokhan.Data.Providers.Contracts
 
         List<string> SelectedGroups { get; }
 
-        void RemoveCachedHeaders(string repository);
+        void InvalidateColumnsCache(string repository);
 
         List<ColumnDescription> GetColumns(string repository, IList<string> names = null);
 

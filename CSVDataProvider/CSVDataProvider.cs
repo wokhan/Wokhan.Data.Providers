@@ -25,11 +25,13 @@ namespace Wokhan.Data.Providers
         [ProviderParameter("Merge all selected files")]
         public bool MergeFiles { get; set; } = true;
 
-        public new string FileFilter
+        public override string FileFilter
         {
             get { return "CSV files|*.csv"; }
             set { }
         }
+
+        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
 
         public CSVDataProvider() : base() { }
 
@@ -40,7 +42,7 @@ namespace Wokhan.Data.Providers
 
         private Dictionary<string, List<ColumnDescription>> _headers = new Dictionary<string, List<ColumnDescription>>();
 
-        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             List<ColumnDescription> ret = null;
 
@@ -180,6 +182,11 @@ namespace Wokhan.Data.Providers
 
                 yield return idx == null ? values : idx.Select(i => i < values.Length ? values[i] : "[Out of bound]").ToArray();
             }
+        }
+
+        public override void InvalidateColumnsCache(string repository)
+        {
+            throw new NotImplementedException();
         }
 
         /*private IEnumerable<string[]> InnerGetData(TextFieldParser csvParser, string repository, IEnumerable<string> attributes)

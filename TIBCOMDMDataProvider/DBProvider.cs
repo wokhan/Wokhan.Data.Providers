@@ -143,7 +143,7 @@ SELECT DISTINCT r.NAME
         /// <param name="enterprise"></param>
         /// <param name="repository"></param>
         /// <returns></returns>
-        public new IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null)
+        public override IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null)
         {
             var ret = new List<string>();
 
@@ -295,7 +295,7 @@ SELECT DISTINCT r.NAME
         /// <param name="enterprise"></param>
         /// <param name="repository"></param>
         /// <returns></returns>
-        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             var ret = new List<ColumnDescription>();
 
@@ -331,7 +331,7 @@ SELECT DISTINCT r.NAME
             return ret;
         }
 
-        public new DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth = 1, int startFrom = 1, int? count = null, bool rootNodeOnly = false)
+        public override DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth = 1, int startFrom = 1, int? count = null, bool rootNodeOnly = false)
         {
 
             // TEMPORARY

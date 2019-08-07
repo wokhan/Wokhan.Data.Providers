@@ -18,10 +18,10 @@ namespace Wokhan.Data.Providers.Bases
         public string ConnectionString { get; set; }
 
         [ProviderParameter("Schema (optional)", ExclusionGroup = "Connection details", Position = 30)]
-        public string Schema { get; set; }
+        public virtual string Schema { get; set; }
 
         [ProviderParameter("Host", ExclusionGroup = "Connection details", Position = 10)]
-        public new string Host { get; set; }
+        public override string Host { get; set; }
 
         [ProviderParameter("Port", ExclusionGroup = "Connection details", Position = 20)]
         public int Port { get; set; }
@@ -51,7 +51,7 @@ namespace Wokhan.Data.Providers.Bases
 
         public abstract DbConnection GetConnection();
 
-        public static new string GetFormatKey(List<object> srcAttributesCollection, object srcAttribute)
+        public override string GetFormatKey(List<object> srcAttributesCollection, object srcAttribute)
         {
             return ((DataColumn)srcAttribute).ColumnName;
         }
@@ -101,15 +101,13 @@ namespace Wokhan.Data.Providers.Bases
         //    set { _headers = value.ToDictionary(h => h.Key, h => h.Value.ToDictionary(k => k.Key, k => Type.GetType(k.Value))); }
         //}
 
-        public new void RemoveCachedHeaders(string repository)
+
+        public override void InvalidateColumnsCache(string repository)
         {
-            //if (_headers.ContainsKey(this.Name + "_" + repository))
-            //{
-            //    _headers.Remove(this.Name + "_" + repository);
-            //}
+            throw new NotImplementedException();
         }
 
-        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             List<ColumnDescription> ret;
 
@@ -259,7 +257,7 @@ namespace Wokhan.Data.Providers.Bases
         //}
 
 
-        public new bool Test(out string details)
+        public override bool Test(out string details)
         {
             try
             {

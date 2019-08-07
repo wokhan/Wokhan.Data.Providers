@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.Linq;
@@ -24,11 +25,28 @@ namespace Wokhan.Data.Providers
         public bool UseServerBind { get; set; }
         public bool UseCache { get; set; } = false;
 
+        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
+
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InvalidateColumnsCache(string repository)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Test(out string details)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
-            string qry = updateValue(this.Query, values);
-            string userdn = updateValue(this.UserDn, values);
-            string passwd = updateValue(this.Password, values);
+            string qry = UpdateValue(this.Query, values);
+            string userdn = UpdateValue(this.UserDn, values);
+            string passwd = UpdateValue(this.Password, values);
 
             var authOptions = (this.UseSSL ? AuthenticationTypes.SecureSocketsLayer : AuthenticationTypes.None) | (this.UseServerBind ? AuthenticationTypes.ServerBind : AuthenticationTypes.None);
 

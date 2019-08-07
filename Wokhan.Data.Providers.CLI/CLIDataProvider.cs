@@ -11,7 +11,24 @@ namespace Wokhan.Data.Providers.CLI
         public string Path { get; set; }
         public string Arguments { get; set; }
 
-        public override IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, IList<Dictionary<string, string>> values = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null)
+        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
+
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InvalidateColumnsCache(string repository)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Test(out string details)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             var p = new Process();
             string path = Path;
@@ -30,23 +47,18 @@ namespace Wokhan.Data.Providers.CLI
             p.StartInfo.CreateNoWindow = true;
 
             //p.OutputDataReceived += (sender, args) => sb.Append(args.Data);
-            
+
             var sw = Stopwatch.StartNew();
 
             p.Start();
-            string output = p.StandardOutput.ReadToEnd();
-            string error = p.StandardError.ReadToEnd();
+            object output = p.StandardOutput.ReadToEnd();
+            object error = p.StandardError.ReadToEnd();
             p.WaitForExit();
 
             sw.Stop();
             statisticsBag?.Add("ProcessDone", sw.ElapsedMilliseconds);
 
-            return new[] { output }.AsQueryable();
-        }
-
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
-        {
-            throw new NotImplementedException();
+            return new[] { (T)output }.AsQueryable();
         }
     }
 }

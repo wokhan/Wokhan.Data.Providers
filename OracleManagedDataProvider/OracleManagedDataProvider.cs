@@ -20,7 +20,7 @@ namespace Wokhan.Data.Providers
 
         private string _host = null;
         [ProviderParameter("Host", ExclusionGroup = "Connection details", Position = 10)]
-        public new string Host
+        public override string Host
         {
             get { return _host ?? Regex.Match(this.RealConnectionString, @"HOST=([^\)]*)\)", RegexOptions.IgnoreCase).Groups[1].Value; }
             set { _host = value; }
@@ -28,7 +28,7 @@ namespace Wokhan.Data.Providers
 
         private string _schema;
         [ProviderParameter("Schema (optional)", ExclusionGroup = "Connection details", Position = 30)]
-        public new string Schema
+        public override string Schema
         {
             get { return String.IsNullOrEmpty(_schema) ? (String.IsNullOrEmpty(Username) ? Regex.Match(this.RealConnectionString, @"User ID=([^\)|;]*)(?:\)|;)", RegexOptions.IgnoreCase).Groups[1].Value : Username) : _schema; }
             set { _schema = value; }
@@ -38,6 +38,8 @@ namespace Wokhan.Data.Providers
         {
             get { return String.IsNullOrEmpty(this.ConnectionString) ? String.Format(cStringformat, _host, Port, SID, Username, Password) : this.ConnectionString; }
         }
+
+        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
 
         public override DbDataAdapter DataAdapterInstancer()
         {
@@ -67,7 +69,7 @@ namespace Wokhan.Data.Providers
             }
         }
 
-        public new Dictionary<string, object> GetDefaultRepositories()
+        public override Dictionary<string, object> GetDefaultRepositories()
         {
             var ret = new Dictionary<string, object>();
 

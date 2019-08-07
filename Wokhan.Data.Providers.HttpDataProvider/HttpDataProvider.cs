@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -26,13 +27,35 @@ namespace Wokhan.Data.Providers.HttpDataProvider
         public int Timeout { get; set; } = 20000;
         public Dictionary<string, string> Headers { get; set; }
 
+        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
+
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InvalidateColumnsCache(string repository)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Test(out string details)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
         {
             var sw = new Stopwatch();
 
             string proxy = null;
-            string localurl = updateValue(this.Url, values);
-            string localbody = updateValue(this.Body, values);
+            string localurl = UpdateValue(this.Url, values);
+            string localbody = UpdateValue(this.Body, values);
 
             var req = (HttpWebRequest)WebRequest.Create(localurl);
             req.ServicePoint.ConnectionLimit = 100;

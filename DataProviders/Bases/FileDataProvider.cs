@@ -15,7 +15,7 @@ namespace Wokhan.Data.Providers.Bases
             set { _encoding = UTF8Encoding.GetEncoding(value); }
         }
 
-        public string FileFilter
+        public virtual string FileFilter
         {
             get { return "All files|*.*"; }
             set { }
@@ -26,21 +26,7 @@ namespace Wokhan.Data.Providers.Bases
             get { return new[] { "Identifier", "Full path" }; }
             set { }
         }*/
-        public new Dictionary<string, object> GetDefaultRepositories()
-        {
-            // Change for an interface implementing Filter
-            /*var filepicker = new OpenFileDialog() { Filter = ((dynamic)this).FileFilter, Multiselect = true };
-            if (filepicker.ShowDialog().Value)
-            {
-                return filepicker.FileNames.ToDictionary(f => f, f => (object)f);
-            }
-            else
-            {
-                return null;
-            }*/
-            throw new NotImplementedException();
-        }
-
+        
         public static Dictionary<string, string> GetEncoding()
         {
             return new Dictionary<string, string> {
@@ -52,7 +38,7 @@ namespace Wokhan.Data.Providers.Bases
             };
         }
 
-        public new bool Test(out string details)
+        public override bool Test(out string details)
         {
             details = "OK";
             return true;

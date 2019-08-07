@@ -12,6 +12,7 @@ namespace Wokhan.Data.Providers
     [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
     public class SQLServerDataProvider : DBDataProvider, IDBDataProvider, IExposedDataProvider
     {
+        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
 
         public override DbDataAdapter DataAdapterInstancer()
         {
@@ -23,7 +24,7 @@ namespace Wokhan.Data.Providers
             return new SqlConnection(this.ConnectionString);
         }
 
-        public new Dictionary<string, object> GetDefaultRepositories()
+        public override Dictionary<string, object> GetDefaultRepositories()
         {
             var ret = new Dictionary<string, object>();
 

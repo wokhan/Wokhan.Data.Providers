@@ -26,9 +26,11 @@ namespace Wokhan.Data.Providers
             set;
         }
 
+        public override Dictionary<string, string> MonitoringTypes => throw new System.NotImplementedException();
+
         public NPOIXLSDataProvider() : base() { }
 
-        public new void RemoveCachedHeaders(string repository)
+        public override void InvalidateColumnsCache(string repository)
         {
             if (cachedHeaders.ContainsKey(repository))
             {
@@ -68,7 +70,7 @@ namespace Wokhan.Data.Providers
         }
 
         private Dictionary<string, List<ColumnDescription>> cachedHeaders = new Dictionary<string, List<ColumnDescription>>();
-        public new List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             if (!cachedHeaders.ContainsKey(repository))
             {
@@ -99,7 +101,7 @@ namespace Wokhan.Data.Providers
         }
 
         private Dictionary<string, object> _defaultRepositories;
-        public new Dictionary<string, object> GetDefaultRepositories()
+        public override Dictionary<string, object> GetDefaultRepositories()
         {
             if (_defaultRepositories == null)
             {
@@ -117,7 +119,7 @@ namespace Wokhan.Data.Providers
         }
 
 
-        public new bool Test(out string details)
+        public override bool Test(out string details)
         {
             if (!System.IO.File.Exists(File))
             {

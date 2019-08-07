@@ -11,7 +11,7 @@ namespace Wokhan.Data.Providers.TIBCOMDMDataProvider
 {
     internal class WSProvider :  IDataProvider
     {
-        public new bool RequiresDepth { get { return true; } }
+        public bool RequiresDepth { get { return true; } }
 
         [ProviderParameter("WebServiceURI")]
         public string WebServiceURI { get; set; }
