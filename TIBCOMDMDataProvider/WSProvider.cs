@@ -9,7 +9,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.TIBCOMDMDataProvider
 {
-    internal class WSProvider :  IDataProvider
+    internal class WSProvider :  AbstractDataProvider
     {
         public bool RequiresDepth { get { return true; } }
 

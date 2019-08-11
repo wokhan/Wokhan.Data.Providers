@@ -84,7 +84,7 @@ namespace Wokhan.Data.Providers
             var failed = types.FirstOrDefault(t => !t.IsClass || !typeof(IExposedDataProvider).IsAssignableFrom(t));
             if (failed != null)
             {
-                throw new ArgumentException($"{failed.Name} type doesn't inherit from {nameof(DataProvider)} or doesn't implement {nameof(IExposedDataProvider)}. Cannot continue.");
+                throw new ArgumentException($"{failed.Name} type doesn't inherit from {nameof(AbstractDataProvider)} or doesn't implement {nameof(IExposedDataProvider)}. Cannot continue.");
             }
             additionalProviders = additionalProviders.Concat(AddTypes(false, types)).ToArray();
         }

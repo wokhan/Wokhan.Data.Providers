@@ -12,7 +12,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "LDAP Data Provider")]
-    public class LdapDataProvider : DataProvider, IExposedDataProvider
+    public class LdapDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         public string Uri { get; set; }
         public string UserDn { get; set; }
@@ -20,17 +20,27 @@ namespace Wokhan.Data.Providers
         public string RootDn { get; set; }
         //public string GroupsRootDn { get; set; }
         public string Query { get; set; }
-        public string[] Attributes { get; set; }
+
+        private string[] _attributes = new[] { "dn" };
+
+        public string[] Attributes { get => _attributes;
+            set
+            {
+                _attributes = value;
+                _columns = value.Select(a => new ColumnDescription() { Name = a, DisplayName = a, Description = a }).ToList();
+            }
+        }
         public bool UseSSL { get; set; }
         public bool UseServerBind { get; set; }
         public bool UseCache { get; set; } = false;
 
-        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
-
+        private List<ColumnDescription> _columns;
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
-            throw new NotImplementedException();
+            return _columns;
         }
+
+        public override bool AllowCustomRepository => false;
 
         public override void InvalidateColumnsCache(string repository)
         {
@@ -42,7 +52,7 @@ namespace Wokhan.Data.Providers
             throw new NotImplementedException();
         }
 
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             string qry = UpdateValue(this.Query, values);
             string userdn = UpdateValue(this.UserDn, values);
@@ -52,7 +62,7 @@ namespace Wokhan.Data.Providers
 
             using (var root = new DirectoryEntry(Uri + "/" + RootDn, userdn, passwd, authOptions))
             {
-                using (var ds = new DirectorySearcher(root, qry, Attributes ?? new string[0]))
+                using (var ds = new DirectorySearcher(root, qry, Attributes))
                 {
                     var sw = Stopwatch.StartNew();
 
@@ -62,8 +72,8 @@ namespace Wokhan.Data.Providers
 
                     var ret = ds.FindAll()
                                 .Cast<SearchResult>()
-                                .Select(c => attributes.Select(a => c.Properties[a].Cast<object>().FirstOrDefault()).ToArray())
-                                .Select(x => x.ToObject<T>(attributes.ToArray()))
+                                .Select(c => Attributes.Select(a => c.Properties[a].Cast<object>().FirstOrDefault()).ToArray())
+                                .Select(x => x.ToObject<T>(Attributes))
                                 .AsQueryable();
                     sw.Stop();
 

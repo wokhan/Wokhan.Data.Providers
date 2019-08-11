@@ -10,10 +10,8 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
-    public class SQLServerDataProvider : DBDataProvider, IDBDataProvider, IExposedDataProvider
+    public class SQLServerDataProvider : DataBaseDataProvider, IExposedDataProvider
     {
-        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
-
         public override DbDataAdapter DataAdapterInstancer()
         {
             return new SqlDataAdapter("", this.ConnectionString);

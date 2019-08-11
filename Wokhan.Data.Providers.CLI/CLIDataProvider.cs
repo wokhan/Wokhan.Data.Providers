@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Wokhan.Data.Providers.Bases;
+using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.CLI
 {
-    public class CLIDataProvider : DataProvider
+    public class CLIDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         public string Path { get; set; }
         public string Arguments { get; set; }
-
-        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
 
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
@@ -28,7 +27,7 @@ namespace Wokhan.Data.Providers.CLI
             throw new NotImplementedException();
         }
 
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             var p = new Process();
             string path = Path;

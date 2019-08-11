@@ -11,7 +11,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Oracle ODP.NET Managed Driver", Icon = "/Resources/Providers/SQL.png")]
-    public class OracleManagedDataProvider : DBDataProvider, IDBDataProvider, IExposedDataProvider
+    public class OracleManagedDataProvider : DataBaseDataProvider, IExposedDataProvider
     {
         [ProviderParameter("SID", ExclusionGroup = "Connection details", Position = 25)]
         public string SID { get; set; }
@@ -38,8 +38,6 @@ namespace Wokhan.Data.Providers
         {
             get { return String.IsNullOrEmpty(this.ConnectionString) ? String.Format(cStringformat, _host, Port, SID, Username, Password) : this.ConnectionString; }
         }
-
-        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
 
         public override DbDataAdapter DataAdapterInstancer()
         {

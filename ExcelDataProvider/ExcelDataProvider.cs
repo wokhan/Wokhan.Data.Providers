@@ -11,7 +11,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Files", IsDirectlyBindable = true, Name = "Excel Workbook", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
-    public class ExcelDataProvider : DataProvider, IDataProvider, IExposedDataProvider
+    public class ExcelDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         [ProviderParameter("File", IsFile = true)]
         public string File
@@ -26,8 +26,6 @@ namespace Wokhan.Data.Providers
             get;
             set;
         }
-
-        public override Dictionary<string, string> MonitoringTypes => throw new System.NotImplementedException();
 
         public ExcelDataProvider() : base() { }
 
@@ -69,6 +67,7 @@ namespace Wokhan.Data.Providers
 
             return cachedColumns[repository];
         }
+        public override bool AllowCustomRepository { get; } = false;
 
         public override Dictionary<string, object> GetDefaultRepositories()
         {
@@ -128,12 +127,12 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
-            return _getdata<T>(repository, attributes.ToArray()).AsQueryable();
+            return _getdata<T>(repository).AsQueryable();
         }
 
-        private IEnumerable<T> _getdata<T>(string repository, string[] attributes)
+        private IEnumerable<T> _getdata<T>(string repository)
         {
             var attrlst = GetColumns(repository).Select(c => c.Name).ToList();
             var rep = (string)GetDefaultRepositories()[repository];
@@ -145,7 +144,7 @@ namespace Wokhan.Data.Providers
                     reader.NextResult();
                 }
 
-                if (attributes != null)
+                /*if (attributes != null)
                 {
                     var attrIdx = attributes.Select(a => attrlst.IndexOf(a)).ToArray();
                     while (reader.Read())
@@ -154,6 +153,7 @@ namespace Wokhan.Data.Providers
                     }
                 }
                 else
+                */
                 {
                     while (reader.Read())
                     {

@@ -11,7 +11,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Files", Name = "CSV", Description = "Allows to load data from CSV or DSV files.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/CSV.png")]
-    public class CSVDataProvider : FileDataProvider, IDataProvider, IExposedDataProvider
+    public class CSVDataProvider : FileDataProvider, IExposedDataProvider
     {
         [ProviderParameter("Delimiter")]
         public string Delimiter { get; set; } = ";";
@@ -30,8 +30,6 @@ namespace Wokhan.Data.Providers
             get { return "CSV files|*.csv"; }
             set { }
         }
-
-        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
 
         public CSVDataProvider() : base() { }
 
@@ -82,20 +80,19 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             if (MergeFiles)
             {
-                var hd = this.GetColumns(repository).Select(c => c.Name).ToArray();
-                return this.Repositories.SelectMany(r => __GetTypedData<T, TK>(r.Key, attributes ?? hd, true)).AsQueryable();
+                return this.Repositories.SelectMany(r => __GetTypedData<T>(r.Key, true)).AsQueryable();
             }
             else
             {
-                return __GetTypedData<T, TK>(repository, attributes, false);
+                return __GetTypedData<T>(repository, false);
             }
         }
 
-        private IQueryable<T> __GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, bool ignoreHeader) where T : class
+        private IQueryable<T> __GetTypedData<T>(string repository, bool ignoreHeader) where T : class
         {
             var csvParser = new TextFieldParser((string)Repositories[repository], this._encoding);
             csvParser.Delimiters = new[] { this.Delimiter };
@@ -108,17 +105,9 @@ namespace Wokhan.Data.Providers
                     csvParser.ReadLine();
                 }
 
-                string[] attrlst = null;
-                if (attributes != null)
-                {
-                    attrlst = attributes.ToArray();
-                }
-                else
-                {
-                    attrlst = this.GetColumns(repository).Select(c => c.Name).ToArray();
-                }
+                var attrlst = this.GetColumns(repository).Select(c => c.Name).ToArray();
 
-                return InnerGetData(csvParser, repository, attributes).Select(x => x.ToObject<T>(attrlst)).AsQueryable();
+                return InnerGetData(csvParser, repository).Select(x => x.ToObject<T>(attrlst)).AsQueryable();
                 //if (attributes != null && attributes.Any())
                 //{
                 //    var attrlst = attributes.ToArray();
@@ -141,21 +130,18 @@ namespace Wokhan.Data.Providers
 
         }
 
-        private IEnumerable<string[]> InnerGetData(TextFieldParser csvParser, string repository, IEnumerable<string> attributes = null)
+        private IEnumerable<string[]> InnerGetData(TextFieldParser csvParser, string repository)
         {
             var headers = this.GetColumns(repository);
             int[] idx = null;
-            int targetLength;
-            if (attributes != null)
+            int targetLength = headers.Count;
+            /*if (attributes != null)
             {
                 idx = attributes.Join(headers.Select((h, i) => new { h, i }), a => a, h => h.h.Name, (a, h) => h.i)
                                 .ToArray();
                 targetLength = idx.Length;
             }
-            else
-            {
-                targetLength = headers.Count;
-            }
+            */
 
             string[] nxt = null;
 

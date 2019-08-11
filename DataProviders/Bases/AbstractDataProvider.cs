@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Wokhan.Data.Providers.Contracts;
@@ -11,7 +12,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers.Bases
 {
     [DataContract]
-    public abstract class DataProvider : IDataProvider
+    public abstract class AbstractDataProvider : IDataProvider
     {
         //public IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null)
         //{
@@ -37,7 +38,7 @@ namespace Wokhan.Data.Providers.Bases
 
         private static readonly Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
 
-        protected abstract IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
+        public abstract IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
 
         [DataMember]
         public virtual string Name { get; set; }
@@ -46,15 +47,41 @@ namespace Wokhan.Data.Providers.Bases
         {
             return null;
         }
-        public virtual Type GetTypedClass(string repository)
+
+        protected Type GetKeyType(string repository)
         {
             Type ret;
             lock (cachedTypes)
             {
-                var cachekey = this.GetHashCode() + "_" + repository;
+                var cachekey = $"{this.GetHashCode()}_{repository}_keys";
                 if (!cachedTypes.TryGetValue(cachekey, out ret))
                 {
-                    var properties = new[] { new DynamicProperty("__UID", typeof(long)) }.Concat(this.GetColumns(repository).Select(t => new DynamicProperty(t.Name, t.Type))).ToList();
+                    var properties = this.GetColumns(repository)
+                                         .Where(c => c.IsKey)
+                                         .DefaultIfEmpty(this.GetColumns(repository).First())
+                                         .Select(t => new DynamicProperty(t.Name, t.Type)).ToList();
+
+                    ret = DynamicClassFactory.CreateType(properties);
+
+                    cachedTypes.Add(cachekey, ret);
+                }
+            }
+
+            return ret;
+        }
+
+        public virtual Type GetDataType(string repository)
+        {
+            Type ret;
+            lock (cachedTypes)
+            {
+                var cachekey = $"{this.GetHashCode()}_{repository}";
+                if (!cachedTypes.TryGetValue(cachekey, out ret))
+                {
+                    var properties = this.GetColumns(repository)
+                                         .Select(t => new DynamicProperty(t.Name, t.Type))
+                                         .Prepend(new DynamicProperty("__UID", typeof(long)))
+                                         .ToList();
 
                     ret = DynamicClassFactory.CreateType(properties);
 
@@ -97,8 +124,6 @@ namespace Wokhan.Data.Providers.Bases
 
         public Type Type { get { return this.GetType(); } }
 
-        public abstract Dictionary<string, string> MonitoringTypes { get; }
-
         public DataProviderStruct ProviderTypeInfo { get { return DataProviders.AllProviders.Single(d => d.Type == this.GetType()); } }
 
         private Dictionary<string, object> _repositories = new Dictionary<string, object>();
@@ -109,6 +134,8 @@ namespace Wokhan.Data.Providers.Bases
             set { _repositories = value.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value); }
         }
 
+        public virtual bool AllowCustomRepository { get; } = true;
+
         /// <summary>
         /// Gets typed data dynamically (for when the target type is unknown)
         /// </summary>
@@ -116,39 +143,19 @@ namespace Wokhan.Data.Providers.Bases
         /// <param name="attributes">Attributes (amongst repository's ones)</param>
         /// <param name="keys">Unused</param>
         /// <returns></returns>
-        public IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, IList<Dictionary<string, string>> values = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null)
+        public IQueryable GetQueryable(string repository = null, Dictionary<string, long> statisticsBag = null)
         {
-            var dataType = this.GetTypedClass(repository);
-            Type keyType;
-            /*if (keys != null)
-            {
-                lock (cachedTypes)
-                {
-                    var kx = keys.Select(k => k.Key).Aggregate((a, b) => a + "_" + b);
-                    var cachekey = this.GetHashCode() + "_" + repository + kx; 
-                    if (!cachedTypes.TryGetValue(cachekey, out xt))
-                    {
-                        xt = DynamicExpression.CreateClass(keys.Select(t => new DynamicProperty(t.Key, t.Value)));
-                        cachedTypes.Add(cachekey, xt);
-                    }
-                }
-            }
-            else*/
-            {
-                keyType = typeof(string);
-            }
+            var dataType = this.GetDataType(repository);
+            //var keyType = this.GetKeyType(repository);
+            
+            var m = this.GetType().GetMethod(nameof(GetQueryable), BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(dataType);
 
-            var m = this.GetType().GetMethod(nameof(GetTypedData)).MakeGenericMethod(dataType, keyType);
-
-            var sw = Stopwatch.StartNew();
-
-            var data = (IQueryable<dynamic>)m.Invoke(this, new object[] { repository, attributes, statisticsBag });
-
-            sw.Stop();
-            statisticsBag?.Add("TOTAL_INVOKE", sw.ElapsedMilliseconds);
+            var data = (IQueryable)m.Invoke(this, new object[] { repository, statisticsBag });
 
             return data;
         }
+
+        
 
         protected string UpdateValue(string src, IList<Dictionary<string, string>> values)
         {
@@ -162,7 +169,7 @@ namespace Wokhan.Data.Providers.Bases
 
         protected virtual long Count(string repository = null)
         {
-            return this.GetData(repository).Count();
+            return this.GetQueryable(repository).Count();
         }
 
         public abstract bool Test(out string details);
@@ -174,9 +181,5 @@ namespace Wokhan.Data.Providers.Bases
             return new RelationDefinition[0];
         }
 
-        public virtual DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

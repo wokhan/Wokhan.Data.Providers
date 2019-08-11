@@ -16,7 +16,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers.HttpDataProvider
 {
     [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Http Data Provider")]
-    public class HttpDataProvider : DataProvider, IExposedDataProvider
+    public class HttpDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         public string Url { get; set; }
         public string Proxy { get; set; }
@@ -27,14 +27,7 @@ namespace Wokhan.Data.Providers.HttpDataProvider
         public int Timeout { get; set; } = 20000;
         public Dictionary<string, string> Headers { get; set; }
 
-        public override Dictionary<string, string> MonitoringTypes => throw new NotImplementedException();
-
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +42,7 @@ namespace Wokhan.Data.Providers.HttpDataProvider
             throw new NotImplementedException();
         }
 
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
         {
             var sw = new Stopwatch();
 

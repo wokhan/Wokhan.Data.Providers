@@ -13,6 +13,7 @@ namespace Wokhan.Data.Providers.Bases
         public string Description { get; set; }
         public Type Type { get; set; }
         public string Category { get; set; }
+        public bool IsKey { get; internal set; }
 
         public static List<ColumnDescription> FromType(Type sourceType)
         {
@@ -26,7 +27,8 @@ namespace Wokhan.Data.Providers.Bases
                     DisplayName = details?.DisplayName ?? p.Name,
                     Description = details?.Description ?? p.Name,
                     Type = p.PropertyType,
-                    Category = details?.Category ?? "Default"
+                    Category = details?.Category ?? "Default", 
+                    IsKey = details?.IsKey ?? false
                 };
             })
             .ToList();

@@ -331,9 +331,8 @@ SELECT DISTINCT r.NAME
             return ret;
         }
 
-        public override DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth = 1, int startFrom = 1, int? count = null, bool rootNodeOnly = false)
-        {
-
+        /*public override DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth = 1, int startFrom = 1, int? count = null, bool rootNodeOnly = false)
+        { 
             // TEMPORARY
             // TODO: Remove this to directly use a SearchOptions based implementation for the main GetData method.
             var ret = GetData(searchRep.Keys.First(),
@@ -352,6 +351,7 @@ SELECT DISTINCT r.NAME
 
             return ret;
         }
+        */
         /// <summary>
         /// Retrieves the repository data using the TIBCO CIM views.
         /// </summary>

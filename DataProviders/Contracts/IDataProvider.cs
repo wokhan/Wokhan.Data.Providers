@@ -14,8 +14,6 @@ namespace Wokhan.Data.Providers.Contracts
 
         Type Type { get; }
 
-        Dictionary<string, string> MonitoringTypes { get; }
-
         DataProviderStruct ProviderTypeInfo { get; }
 
         /// <summary>
@@ -26,7 +24,7 @@ namespace Wokhan.Data.Providers.Contracts
         /// <param name="repository">Source repository</param>
         /// <param name="attributes">Attributes</param>
         /// <returns></returns>
-        Type GetTypedClass(string repository);
+        Type GetDataType(string repository);
 
         string GetFormatKey(List<object> srcAttributesCollection, object srcAttribute);
 
@@ -38,20 +36,22 @@ namespace Wokhan.Data.Providers.Contracts
 
         List<ColumnDescription> GetColumns(string repository, IList<string> names = null);
 
-        IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null);
+        IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null);//
 
-        [Obsolete("Should be replaced by IQueryable Linq statements")]
-        DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly);
+       // [Obsolete("Should be replaced by IQueryable Linq statements")]
+        //DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly);
 
-        IQueryable<dynamic> GetData(string repository = null, IEnumerable<string> attributes = null, IList<Dictionary<string, string>> values = null, Dictionary<string, Type> keys = null, Dictionary<string, long> statisticsBag = null);
+        IQueryable GetQueryable(string repository = null, Dictionary<string, long> statisticsBag = null);
 
-        //IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
+        IQueryable<T> GetQueryable<T>(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
 
         /// <summary>
         /// Retrieves all repositories along with the query to access each of them
         /// </summary>
         /// <returns></returns>
         Dictionary<string, object> GetDefaultRepositories();
+
+        bool AllowCustomRepository { get; }
 
         /*[Obsolete]
         IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null);

@@ -12,7 +12,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.Bases
 {
-    public abstract class DBDataProvider : DataProvider, IDBDataProvider
+    public abstract class DataBaseDataProvider : AbstractDataProvider, IDBDataProvider
     {
         [ProviderParameter("Connection String", ExclusionGroup = "Connection string", Position = 0)]
         public string ConnectionString { get; set; }
@@ -42,7 +42,7 @@ namespace Wokhan.Data.Providers.Bases
         public List<string> TODORelationCartesian { get; private set; }
 
 
-        static DBDataProvider()
+        static DataBaseDataProvider()
         {
             DbInterception.Add(new DbInterceptor());
         }
@@ -104,7 +104,7 @@ namespace Wokhan.Data.Providers.Bases
 
         public override void InvalidateColumnsCache(string repository)
         {
-            throw new NotImplementedException();
+            _headers.Remove(repository);
         }
 
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
@@ -146,7 +146,7 @@ namespace Wokhan.Data.Providers.Bases
         }
 
         Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
         {
             var sw = Stopwatch.StartNew();
             Type tx;
@@ -154,16 +154,17 @@ namespace Wokhan.Data.Providers.Bases
             {
                 if (!cachedTypes.TryGetValue(repository, out tx))
                 {
-                    tx = typeof(DynamicDbContext<,>).MakeGenericType(typeof(T), typeof(TK));
+                    var keytype = GetKeyType(repository);
+                    tx = typeof(DynamicDbContext<,>).MakeGenericType(typeof(T), keytype);
                     cachedTypes.Add(repository, tx);
                 }
             }
-            
+
             var conn = ((IDBDataProvider)this).GetConnection();
 
             var h = GetColumns(repository).Select(hd => hd.Name).ToArray();
             var dbc = (IDynamicDbContext)Activator.CreateInstance(tx, conn, "DYNAMICSCHEMA", repository, h);
-            
+
             dbc.BaseQuery = (string)Repositories[repository];
             sw.Stop();
             statisticsBag?.Add("PREPARE", sw.ElapsedMilliseconds);

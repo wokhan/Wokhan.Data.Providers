@@ -10,7 +10,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Files", IsDirectlyBindable = true, Name = "Excel Workbook (NPOI)", Description = "Allows to load data from XLS or XLSX worksheets.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
-    public class NPOIXLSDataProvider : DataProvider, IDataProvider, IExposedDataProvider
+    public class NPOIXLSDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         [ProviderParameter("File", IsFile = true, FileFilter = "Excel workbook|*.xls;*.xlsx")]
         public string File
@@ -25,8 +25,6 @@ namespace Wokhan.Data.Providers
             get;
             set;
         }
-
-        public override Dictionary<string, string> MonitoringTypes => throw new System.NotImplementedException();
 
         public NPOIXLSDataProvider() : base() { }
 
@@ -100,6 +98,8 @@ namespace Wokhan.Data.Providers
             return cachedHeaders[repository];
         }
 
+        public override bool AllowCustomRepository { get; } = false;
+
         private Dictionary<string, object> _defaultRepositories;
         public override Dictionary<string, object> GetDefaultRepositories()
         {
@@ -131,12 +131,12 @@ namespace Wokhan.Data.Providers
             return true;
         }
 
-        protected override IQueryable<T> GetTypedData<T, TK>(string repository, IEnumerable<string> attributes, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
-            return _getdata<T>(repository, attributes.ToArray()).AsQueryable();
+            return _getdata<T>(repository).AsQueryable();
         }
 
-        private IEnumerable<T> _getdata<T>(string repository, string[] attributes)
+        private IEnumerable<T> _getdata<T>(string repository)
         {
             var attrlst = GetColumns(repository).Select(c => c.Name).ToList();
             var rep = (string)GetDefaultRepositories()[repository];
@@ -150,7 +150,7 @@ namespace Wokhan.Data.Providers
                 en.MoveNext();
             }
 
-            if (attributes != null)
+            /*if (attributes != null)
             {
                 var attrIdx = attributes.Select(a => attrlst.IndexOf(a)).ToArray();
                 while (en.MoveNext())
@@ -160,6 +160,7 @@ namespace Wokhan.Data.Providers
                 }
             }
             else
+            */
             {
                 while (en.MoveNext())
                 {

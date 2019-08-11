@@ -5,7 +5,7 @@ using Wokhan.Data.Providers.Attributes;
 
 namespace Wokhan.Data.Providers.Bases
 {
-    public abstract class FileDataProvider : DataProvider
+    public abstract class FileDataProvider : AbstractDataProvider
     {
         protected Encoding _encoding = UTF8Encoding.UTF8;
         [ProviderParameter("Encoding", false, typeof(FileDataProvider), "GetEncoding")]
