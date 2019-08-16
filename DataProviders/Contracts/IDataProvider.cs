@@ -41,7 +41,7 @@ namespace Wokhan.Data.Providers.Contracts
        // [Obsolete("Should be replaced by IQueryable Linq statements")]
         //DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly);
 
-        IQueryable GetQueryable(string repository = null, Dictionary<string, long> statisticsBag = null);
+        IQueryable GetQueryable(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null);
 
         IQueryable<T> GetQueryable<T>(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
 

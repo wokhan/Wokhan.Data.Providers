@@ -11,6 +11,11 @@ namespace Wokhan.Data.Providers
 {
     public class DataProviders
     {
+        static DataProviders()
+        {
+            AllProviders = FromTypes(false, Assembly.GetExecutingAssembly().GetTypes()).ToList();
+        }
+
         public static List<IGrouping<string, DataProviderMemberStruct>> GetParameters(IDataProvider prv)
         {
             var tr = prv.Type.GetProperties();
@@ -71,29 +76,48 @@ namespace Wokhan.Data.Providers
 
         public static void AddPath(string basePath)
         {
-            externalProviders = externalProviders.Concat(GetExternal(basePath)).ToArray();
+            if (!Directory.Exists(basePath))
+            {
+                throw new DirectoryNotFoundException(basePath);
+            }
+            else
+            {
+                var loadContext = new DataProviderLoadContext(basePath);
+                var assemblies = Directory.GetFiles(basePath, "*.dll")
+                                        .Select(f =>
+                                        {
+                                            try
+                                            {
+                                                return loadContext.LoadFromAssemblyPath(f);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                return null;
+                                            }
+                                        })
+                                        .Where(_ => _ != null)
+                                        .ToArray();
+
+                AllProviders.AddRange(FromTypes(true, assemblies.SelectMany(a => a.GetTypes()).ToArray()));
+            }
         }
 
         public static void AddAssemblies(params Assembly[] assemblies)
         {
-            additionalProviders = additionalProviders.Concat(ExtractFromAssemblies(false, assemblies)).ToArray();
+            AllProviders.AddRange(FromTypes(false, assemblies.SelectMany(a => a.GetTypes()).ToArray()));
         }
 
-        public static void AddTypes(params Type[] types )
+        public static void AddTypes(params Type[] types)
         {
             var failed = types.FirstOrDefault(t => !t.IsClass || !typeof(IExposedDataProvider).IsAssignableFrom(t));
             if (failed != null)
             {
                 throw new ArgumentException($"{failed.Name} type doesn't inherit from {nameof(AbstractDataProvider)} or doesn't implement {nameof(IExposedDataProvider)}. Cannot continue.");
             }
-            additionalProviders = additionalProviders.Concat(AddTypes(false, types)).ToArray();
-        }
-        private static DataProviderStruct[] ExtractFromAssemblies(bool external, params Assembly[] assemblies)
-        {
-            return AddTypes(external, assemblies.SelectMany(a => a.GetTypes()).ToArray());
+            AllProviders.AddRange(FromTypes(false, types));
         }
 
-        private static DataProviderStruct[] AddTypes(bool external, params Type[] types)
+        private static DataProviderStruct[] FromTypes(bool external, params Type[] types)
         {
             return types.Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
                    .Select(t => new { Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
@@ -111,54 +135,6 @@ namespace Wokhan.Data.Providers
                    .ToArray();
         }
 
-        private static DataProviderStruct[] externalProviders = new DataProviderStruct[0];
-        private static DataProviderStruct[] embeddedProviders = new DataProviderStruct[0];
-        private static DataProviderStruct[] additionalProviders = new DataProviderStruct[0];
-
-        public static IEnumerable<DataProviderStruct> AllProviders
-        {
-            get
-            {
-                if (embeddedProviders == null)
-                {
-                    embeddedProviders = GetEmbedded();
-                }
-
-                return embeddedProviders.Concat(externalProviders).Concat(additionalProviders);
-            }
-        }
-
-        private static DataProviderStruct[] GetExternal(string basePath)
-        {
-            if (!Directory.Exists(basePath))
-            {
-                throw new DirectoryNotFoundException(basePath);
-            }
-            else
-            {
-                var loadContext = new DataProviderLoadContext(basePath);
-                var external = Directory.GetFiles(basePath, "*.dll")
-                                        .Select(f =>
-                                        {
-                                            try
-                                            {
-                                                return loadContext.LoadFromAssemblyPath(f);
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                return null;
-                                            }
-                                        })
-                                        .Where(_ => _ != null)
-                                        .ToArray();
-
-                return ExtractFromAssemblies(true, external);
-            }
-        }
-
-        private static DataProviderStruct[] GetEmbedded()
-        {
-            return ExtractFromAssemblies(false, Assembly.GetExecutingAssembly());
-        }
+        public static List<DataProviderStruct> AllProviders { get; private set; }
     }
 }

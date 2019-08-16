@@ -26,3 +26,5 @@
 /LdapDataProvider/obj
 /Wokhan.Data.Providers.CLI/bin/Debug/netcoreapp3.0
 /Wokhan.Data.Providers.CLI/obj
+/Database.Core/bin/Debug/netcoreapp3.0
+/Database.Core/obj

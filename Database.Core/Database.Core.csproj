@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>Wokhan.Data.Providers.Database.Core</AssemblyName>
+    <RootNamespace>Wokhan.Data.Providers.Database</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.3.0-preview8-19405-04" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataProviders\Wokhan.Data.Providers.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -38,7 +38,6 @@ namespace Wokhan.Data.Providers.Bases
 
         private static readonly Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
 
-        public abstract IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
 
         [DataMember]
         public virtual string Name { get; set; }
@@ -124,7 +123,7 @@ namespace Wokhan.Data.Providers.Bases
 
         public Type Type { get { return this.GetType(); } }
 
-        public DataProviderStruct ProviderTypeInfo { get { return DataProviders.AllProviders.Single(d => d.Type == this.GetType()); } }
+        public DataProviderStruct ProviderTypeInfo => DataProviders.AllProviders.Single(d => d.Name == this.Name);
 
         private Dictionary<string, object> _repositories = new Dictionary<string, object>();
         [DataMember]
@@ -143,19 +142,20 @@ namespace Wokhan.Data.Providers.Bases
         /// <param name="attributes">Attributes (amongst repository's ones)</param>
         /// <param name="keys">Unused</param>
         /// <returns></returns>
-        public IQueryable GetQueryable(string repository = null, Dictionary<string, long> statisticsBag = null)
+        public IQueryable GetQueryable(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             var dataType = this.GetDataType(repository);
             //var keyType = this.GetKeyType(repository);
             
-            var m = this.GetType().GetMethod(nameof(GetQueryable), BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(dataType);
+            var m = this.GetType().GetMethod(nameof(GetQueryable), 1, null).MakeGenericMethod(dataType);
 
-            var data = (IQueryable)m.Invoke(this, new object[] { repository, statisticsBag });
+            var data = (IQueryable)m.Invoke(this, new object[] { repository, values, statisticsBag });
 
             return data;
         }
 
-        
+        public abstract IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
+
 
         protected string UpdateValue(string src, IList<Dictionary<string, string>> values)
         {
