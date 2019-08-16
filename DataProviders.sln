@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.TIBCO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Ldap", "LdapDataProvider\Wokhan.Data.Providers.Ldap.csproj", "{AB4AB5ED-91FE-4274-A219-8474FFFE52F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Core", "Database.Core\Database.Core.csproj", "{07033D26-130E-4749-95FF-283391CE73E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Database", "Database.Core\Wokhan.Data.Providers.Database.csproj", "{07033D26-130E-4749-95FF-283391CE73E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

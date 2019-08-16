@@ -20,7 +20,7 @@ namespace Wokhan.Data.Providers.Bases
         public object ValueWrapper
         {
             get { return Container.Type.GetProperty(Name).GetValue(Container); }
-            set { Container.Type.GetProperty(Name).SetValue(Container, value); NotifyPropertyChanged("ValueWrapper"); }
+            set { Container.Type.GetProperty(Name).SetValue(Container, value); NotifyPropertyChanged(nameof(ValueWrapper)); }
         }
 
         public IDataProvider Container { get; internal set; }

@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database.Core\Database.Core.csproj" />
+    <ProjectReference Include="..\Database.Core\Wokhan.Data.Providers.Database.csproj" />
   </ItemGroup>
 
 </Project>
