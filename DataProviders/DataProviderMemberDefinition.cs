@@ -6,7 +6,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.Bases
 {
-    public class DataProviderMemberStruct : INotifyPropertyChanged
+    public class DataProviderMemberDefinition : INotifyPropertyChanged
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -17,11 +17,14 @@ namespace Wokhan.Data.Providers.Bases
         public bool HasValuesGetter { get { return ValuesGetter != null; } }
         public Dictionary<string, string> Values { get { return ValuesGetter(); } }
         public string ExclusionGroup { get; set; }
+
         public object ValueWrapper
         {
-            get { return Container.Type.GetProperty(Name).GetValue(Container); }
+            get => Container.Type.GetProperty(Name).GetValue(Container);
             set { Container.Type.GetProperty(Name).SetValue(Container, value); NotifyPropertyChanged(nameof(ValueWrapper)); }
         }
+
+        public int Position { get; set; }
 
         public IDataProvider Container { get; internal set; }
         public bool IsActive { get; internal set; }
@@ -32,7 +35,6 @@ namespace Wokhan.Data.Providers.Bases
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 
 }

@@ -4,11 +4,11 @@ using System.Runtime.Loader;
 
 namespace Wokhan.Data.Providers
 {
-    class DataProviderLoadContext : AssemblyLoadContext
+    internal class DataProviderLoadContext : AssemblyLoadContext
     {
         private AssemblyDependencyResolver _resolver;
 
-        public DataProviderLoadContext(string pluginPath)
+        internal DataProviderLoadContext(string pluginPath)
         {
             _resolver = new AssemblyDependencyResolver(pluginPath);
         }

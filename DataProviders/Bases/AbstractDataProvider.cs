@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
@@ -123,7 +122,7 @@ namespace Wokhan.Data.Providers.Bases
 
         public Type Type { get { return this.GetType(); } }
 
-        public DataProviderStruct ProviderTypeInfo => DataProviders.AllProviders.Single(d => d.Name == this.Name);
+        public DataProviderDefinition Definition => DataProviders.AllProviders.Single(d => d.Name == this.Name);
 
         private Dictionary<string, object> _repositories = new Dictionary<string, object>();
         [DataMember]
@@ -135,6 +134,13 @@ namespace Wokhan.Data.Providers.Bases
 
         public virtual bool AllowCustomRepository { get; } = true;
 
+
+        public AbstractDataProvider()
+        {
+            _getQueryableGenericMethodBase = this.GetType().GetMethods().First(m => m.Name == nameof(GetQueryable) && m.IsGenericMethodDefinition);
+        }
+
+        private MethodInfo _getQueryableGenericMethodBase;
         /// <summary>
         /// Gets typed data dynamically (for when the target type is unknown)
         /// </summary>
@@ -146,10 +152,8 @@ namespace Wokhan.Data.Providers.Bases
         {
             var dataType = this.GetDataType(repository);
             //var keyType = this.GetKeyType(repository);
-            
-            var m = this.GetType().GetMethod(nameof(GetQueryable), 1, null).MakeGenericMethod(dataType);
-
-            var data = (IQueryable)m.Invoke(this, new object[] { repository, values, statisticsBag });
+            var typedMethod = _getQueryableGenericMethodBase.MakeGenericMethod(dataType);
+            var data = (IQueryable)typedMethod.Invoke(this, new object[] { repository, values, statisticsBag });
 
             return data;
         }
@@ -175,11 +179,6 @@ namespace Wokhan.Data.Providers.Bases
         public abstract bool Test(out string details);
 
         public abstract List<ColumnDescription> GetColumns(string repository, IList<string> names = null);
-
-        public virtual IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null)
-        {
-            return new RelationDefinition[0];
-        }
 
     }
 }

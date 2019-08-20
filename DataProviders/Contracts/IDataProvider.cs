@@ -14,7 +14,7 @@ namespace Wokhan.Data.Providers.Contracts
 
         Type Type { get; }
 
-        DataProviderStruct ProviderTypeInfo { get; }
+        DataProviderDefinition Definition { get; }
 
         /// <summary>
         /// Get data (for when the target type is already known)
@@ -36,11 +36,6 @@ namespace Wokhan.Data.Providers.Contracts
 
         List<ColumnDescription> GetColumns(string repository, IList<string> names = null);
 
-        IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null);//
-
-       // [Obsolete("Should be replaced by IQueryable Linq statements")]
-        //DataSet GetDataSet(Dictionary<string, SearchOptions> searchRep, int relationdepth, int startFrom, int? count, bool rootNodesOnly);
-
         IQueryable GetQueryable(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null);
 
         IQueryable<T> GetQueryable<T>(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
@@ -53,11 +48,6 @@ namespace Wokhan.Data.Providers.Contracts
 
         bool AllowCustomRepository { get; }
 
-        /*[Obsolete]
-        IEnumerable GetDataDirect(string repository = null, IEnumerable<string> attributes = null);
-        */
         Dictionary<string, object> Repositories { get; set; }
-
-        //string[] RepositoriesColumnNames { get; set; }
     }
 }

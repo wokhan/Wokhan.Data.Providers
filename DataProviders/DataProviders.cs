@@ -16,35 +16,33 @@ namespace Wokhan.Data.Providers
             AllProviders = FromTypes(false, Assembly.GetExecutingAssembly().GetTypes()).ToList();
         }
 
-        public static List<IGrouping<string, DataProviderMemberStruct>> GetParameters(IDataProvider prv)
+        public static List<IGrouping<string, DataProviderMemberDefinition>> GetParameters(IDataProvider prv)
         {
-            var tr = prv.Type.GetProperties();
-            return tr.Where(t => t.GetCustomAttributes<ProviderParameterAttribute>(true).Any())
+            return prv.Type.GetProperties()
                     .Select(p =>
                     {
-                        var attr = p.GetCustomAttribute<ProviderParameterAttribute>(true);
-                        return new
+                        var attr = p.GetCustomAttributes<ProviderParameterAttribute>(true).SingleOrDefault();
+                        if (attr == null)
                         {
-                            Pos = attr.Position,
-                            Prov = new DataProviderMemberStruct()
-                            {
-                                IsActive = prv.SelectedGroups.Contains(attr.ExclusionGroup),
-                                Container = prv,
-                                Name = p.Name,
-                                Description = attr.Description,
-                                MemberType = p.PropertyType,
-                                IsFile = attr.IsFile,
-                                FileFilter = attr.FileFilter,
-                                ExclusionGroup = attr.ExclusionGroup,
-                                ValuesGetter = attr.Method
-                            }
+                            return null;
+                        }
+                        return new DataProviderMemberDefinition
+                        {
+                            Position = attr.Position,
+                            IsActive = prv.SelectedGroups.Contains(attr.ExclusionGroup),
+                            Container = prv,
+                            Name = p.Name,
+                            Description = attr.Description,
+                            MemberType = p.PropertyType,
+                            IsFile = attr.IsFile,
+                            FileFilter = attr.FileFilter,
+                            ExclusionGroup = attr.ExclusionGroup,
+                            ValuesGetter = attr.Method
                         };
                     })
-                    .Where(t => t.Prov.Description != null)
-                    .OrderBy(t => t.Pos)
-                    .ThenBy(t => t.Prov.Description)
-                    .Select(t => t.Prov)
-                    .GroupBy(c => c.ExclusionGroup ?? null)
+                    .Where(_ => _?.Description != null)
+                    .OrderBy(_ => _.Position).ThenBy(_ => _.Description)
+                    .GroupBy(_ => _.ExclusionGroup ?? "Default")
                     .ToList();
         }
 
@@ -117,24 +115,14 @@ namespace Wokhan.Data.Providers
             AllProviders.AddRange(FromTypes(false, types));
         }
 
-        private static DataProviderStruct[] FromTypes(bool external, params Type[] types)
+        private static DataProviderDefinition[] FromTypes(bool external, params Type[] types)
         {
             return types.Where(t => t.IsClass && typeof(IExposedDataProvider).IsAssignableFrom(t))
-                   .Select(t => new { Type = t, Attributes = t.GetCustomAttributes<DataProviderAttribute>(true).SingleOrDefault() })
-                   .Select(t => new DataProviderStruct()
-                   {
-                       IsExternal = external,
-                       Description = t.Attributes.Description,
-                       Name = t.Attributes.Name,
-                       Category = t.Attributes.Category,
-                       Copyright = t.Attributes.Copyright,
-                       IconPath = t.Attributes.Icon,
-                       Type = t.Type,
-                       IsDirectlyBindable = t.Attributes.IsDirectlyBindable
-                   })
-                   .ToArray();
+                        .Select(t => DataProviderDefinition.From(t, external))
+                        .Where(t => t != null)
+                        .ToArray();
         }
 
-        public static List<DataProviderStruct> AllProviders { get; private set; }
+        public static List<DataProviderDefinition> AllProviders { get; private set; }
     }
 }

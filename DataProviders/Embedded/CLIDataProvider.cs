@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
+    [DataProvider(Category = "Processes", Name = "Process output reader", Description = "Allows to retrieve data from a process standard output stream.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/CSV.png")]
     public class CLIDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         public string Path { get; set; }

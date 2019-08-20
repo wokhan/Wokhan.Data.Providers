@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Wokhan Solutions</Authors>
+    <Description>A data provider to retrieve LDAP data as a Linq Queryable datasource.</Description>
   </PropertyGroup>
 
   <ItemGroup>

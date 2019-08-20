@@ -143,7 +143,7 @@ SELECT DISTINCT r.NAME
         /// <param name="enterprise"></param>
         /// <param name="repository"></param>
         /// <returns></returns>
-        public override IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null)
+        public IEnumerable<RelationDefinition> GetRelations(string repository, IList<string> names = null)
         {
             var ret = new List<string>();
 

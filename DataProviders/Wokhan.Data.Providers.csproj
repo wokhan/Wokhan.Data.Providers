@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Wokhan.Data.Providers</AssemblyName>
+    <Authors>Wokhan Solutions</Authors>
+    <Description>Base classes and interfaces for Wokhan's .NET Core Data Providers, providing unified handling for Linq Queryables dynamically.</Description>
   </PropertyGroup>
 
   <ItemGroup>

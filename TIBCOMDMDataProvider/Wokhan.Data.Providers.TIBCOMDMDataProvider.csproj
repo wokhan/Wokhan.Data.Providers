@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Wokhan Solutions</Authors>
+    <Description>A data provider to retrieve TIBCO MDM data as a linq Queryable datasource.</Description>
   </PropertyGroup>
 
   <ItemGroup>

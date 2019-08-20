@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Wokhan Solutions</Authors>
+    <Description>A data provider to retrieve Excel data as a linq Queryable datasource.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataProviders\Wokhan.Data.Providers.csproj" />
   </ItemGroup>
-  
+
   <!--<ItemGroup>
     <Reference Include="Excel, Version=2.1.2.3, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
