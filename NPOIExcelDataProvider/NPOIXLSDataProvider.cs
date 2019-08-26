@@ -9,7 +9,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Files", IsDirectlyBindable = true, Name = "Excel Workbook (NPOI)", Description = "Allows to load data from XLS or XLSX worksheets.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/Excel.png")]
+    [DataProvider(Category = "Files", IsDirectlyBindable = true, Name = "Excel Workbook (NPOI)", Description = "Allows to load data from XLS or XLSX worksheets.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/file-excel.png")]
     public class NPOIXLSDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         [ProviderParameter("File", IsFile = true, FileFilter = "Excel workbook|*.xls;*.xlsx")]

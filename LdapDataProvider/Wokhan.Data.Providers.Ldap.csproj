@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\account-group.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\account-group.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.DirectoryServices" Version="4.5.0" />
   </ItemGroup>
 

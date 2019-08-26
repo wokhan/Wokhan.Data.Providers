@@ -6,6 +6,7 @@ namespace Wokhan.Data.Providers.Attributes
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class ProviderParameterAttribute : Attribute
     {
+        public string Category;
         public string Description;
         public bool IsEncoded;
         public bool IsFile;
@@ -13,9 +14,8 @@ namespace Wokhan.Data.Providers.Attributes
         public string ExclusionGroup;
         public int Position = Int32.MaxValue;
 
-        private MethodDel method;
         public delegate Dictionary<string, string> MethodDel();
-        public MethodDel Method { get { return method; } }
+        public MethodDel Method { get; }
 
         public ProviderParameterAttribute() { }
 
@@ -25,7 +25,7 @@ namespace Wokhan.Data.Providers.Attributes
             IsEncoded = isEnc;
             if (type != null && methodName != null)
             {
-                method = (MethodDel)Delegate.CreateDelegate(typeof(MethodDel), type, methodName);
+                Method = (MethodDel)Delegate.CreateDelegate(typeof(MethodDel), type, methodName);
             }
         }
 

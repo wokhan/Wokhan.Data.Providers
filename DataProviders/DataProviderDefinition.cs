@@ -2,7 +2,6 @@
 using Wokhan.Data.Providers.Attributes;
 using System.Reflection;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Wokhan.Data.Providers.Bases
 {
@@ -31,7 +30,7 @@ namespace Wokhan.Data.Providers.Bases
                 Name = attr.Name,
                 Category = attr.Category,
                 Copyright = attr.Copyright,
-                IconPath = attr.Icon,
+                IconPath = (attr.Icon != null ? $"/{t.Assembly.GetName().Name};{t.Assembly.GetName().Name}.{attr.Icon.Replace("/", ".")}" : "/Wokhan.Data.Providers;Wokhan.Data.Providers.Resources.Providers.source-repository.png"),
                 Type = t,
                 IsDirectlyBindable = attr.IsDirectlyBindable
             };

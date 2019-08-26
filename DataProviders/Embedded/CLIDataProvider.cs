@@ -8,10 +8,14 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Processes", Name = "Process output reader", Description = "Allows to retrieve data from a process standard output stream.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/CSV.png")]
+    [DataProvider(Category = "Processes", Name = "Process output reader", Description = "Allows to retrieve data from a process standard output stream.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/application.png")]
     public class CLIDataProvider : AbstractDataProvider, IExposedDataProvider
     {
+
+        [ProviderParameter("Application path")]
         public string Path { get; set; }
+
+        [ProviderParameter("Arguments")]
         public string Arguments { get; set; }
 
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)

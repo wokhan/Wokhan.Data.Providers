@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Excel.png" />
+    <None Remove="Resources\file-excel.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\file-excel.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.5.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.5.0" />
     <PackageReference Include="Wokhan.Extensions" Version="1.190417.2.78" />

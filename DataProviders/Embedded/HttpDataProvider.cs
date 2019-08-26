@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,17 +14,35 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Http Data Provider")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Http Data Provider", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/web-box.png")]
     public class HttpDataProvider : AbstractDataProvider, IExposedDataProvider
     {
+        [ProviderParameter("Target URL")]
         public string Url { get; set; }
-        public string Proxy { get; set; }
-        public NetworkCredential ProxyCredentials { get; set; }
-        public string ContentType { get; set; }
-        public string Method { get; set; }
-        public string Body { get; set; }
+
+        [ProviderParameter("Timeout")]
         public int Timeout { get; set; } = 20000;
+
+        [ProviderParameter("HTTP method")]
+        public string Method { get; set; } = "GET";
+
+        [ProviderParameter("Content type")]
+        public string ContentType { get; set; }
+
+        [ProviderParameter("Body (for POST only)")]
+        public string Body { get; set; }
+
+        [ProviderParameter("Headers")]
         public Dictionary<string, string> Headers { get; set; }
+
+        [ProviderParameter("URL", Category = "Proxy")]
+        public string Proxy { get; set; }
+
+        [ProviderParameter("Username", Category = "Proxy")]
+        public string ProxyUsername { get; set; }
+
+        [ProviderParameter("Password", Category = "Proxy")]
+        public string ProxyPassword { get; set; }
 
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
@@ -58,10 +75,10 @@ namespace Wokhan.Data.Providers
             if (Proxy != null)
             {
                 var prx = new WebProxy(Proxy);
-                if (ProxyCredentials != null)
+                if (ProxyUsername != null && ProxyPassword != null)
                 {
                     prx.UseDefaultCredentials = false;
-                    prx.Credentials = ProxyCredentials;
+                    prx.Credentials = new NetworkCredential(ProxyUsername, ProxyPassword);
                 }
                 req.Proxy = prx;
             }
@@ -73,7 +90,7 @@ namespace Wokhan.Data.Providers
                 req.ContentType = this.ContentType;
             }
             this.Headers?.ToList().ForEach(h => req.Headers.Add(h.Key, h.Value));
-            req.Method = this.Method ?? "GET";
+            req.Method = this.Method;
 
             if (this.Body != null)
             {

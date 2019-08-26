@@ -7,7 +7,7 @@ namespace Wokhan.Data.Providers.Attributes
     {
         public string Category;
         public string Name;
-        public string Icon = "/Resources/ICON_PROVIDER_DEFAULT.png";
+        public string Icon;
         public string Copyright;
         public string Description;
         public bool IsDirectlyBindable;

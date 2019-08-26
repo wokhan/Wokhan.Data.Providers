@@ -10,7 +10,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Files", Name = "CSV", Description = "Allows to load data from CSV or DSV files.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/CSV.png")]
+    [DataProvider(Category = "Files", Name = "CSV", Description = "Allows to load data from CSV or DSV files.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/file-delimited.png")]
     public class CSVDataProvider : FileDataProvider, IExposedDataProvider
     {
         [ProviderParameter("Delimiter")]

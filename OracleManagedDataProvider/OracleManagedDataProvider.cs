@@ -10,7 +10,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Oracle ODP.NET Managed Driver", Icon = "/Resources/Providers/SQL.png")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Oracle ODP.NET Managed Driver", Icon = "/Resources/database-export.png")]
     public class OracleManagedDataProvider : DataBaseDataProvider, IExposedDataProvider
     {
         [ProviderParameter("SID", ExclusionGroup = "Connection details", Position = 25)]

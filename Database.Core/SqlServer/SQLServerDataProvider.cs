@@ -9,7 +9,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright = "Developed by Wokhan Solutions", Icon = "/Resources/Providers/SQLServer.png")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "SQL Server", Description = "Easily connect to SQLServer databases.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/database-export.png")]
     public class SQLServerDataProvider : DataBaseDataProvider, IExposedDataProvider
     {
         public override DbDataAdapter DataAdapterInstancer()

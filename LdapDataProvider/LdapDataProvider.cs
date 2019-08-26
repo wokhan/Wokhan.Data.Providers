@@ -11,7 +11,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "LDAP Data Provider")]
+    [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "LDAP Data Provider", Icon = "/Resources/account-group.png")]
     public class LdapDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         public string Uri { get; set; }

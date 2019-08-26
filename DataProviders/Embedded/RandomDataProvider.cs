@@ -9,7 +9,7 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Demo", Name = "Random data", Description = "Randomly generated data following simple settings.", Copyright = "Developed by Wokhan Solutions")]
+    [DataProvider(Category = "Demo", Name = "Random data", Description = "Randomly generated data following simple settings.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/reload.png")]
     public class RandomDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         [ProviderParameter("Number of items")]
@@ -26,7 +26,7 @@ namespace Wokhan.Data.Providers
         {
             var buffer = new byte[rnd.Next(minLength, maxLength)];
             rnd.NextBytes(buffer);
-            
+
             return UTF8Encoding.UTF8.GetString(buffer.Select(b => (byte)(b % 127)).ToArray());
         }
 

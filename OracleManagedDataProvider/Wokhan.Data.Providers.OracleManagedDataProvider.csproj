@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\database-export.png" />
+    <None Remove="Resources\SQL.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\database-export.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.18.6" />
     <PackageReference Include="Wokhan.Extensions" Version="1.190417.2.78" />
   </ItemGroup>
