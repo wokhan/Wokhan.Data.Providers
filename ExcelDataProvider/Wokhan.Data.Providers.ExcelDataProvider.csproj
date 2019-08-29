@@ -18,7 +18,7 @@
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.5.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.5.0" />
-    <PackageReference Include="Wokhan.Extensions" Version="1.190417.2.78" />
+    <PackageReference Include="Wokhan.Core" Version="1.1908.2902.156" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,7 @@ using NPOI.SS.UserModel;
 using System.Collections.Generic;
 using System.Linq;
 using Wokhan.Collections.Extensions;
+using Wokhan.Collections.Generic.Extensions;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
@@ -165,7 +166,7 @@ namespace Wokhan.Data.Providers
                 while (en.MoveNext())
                 {
                     var cast = (IRow)en.Current;
-                    yield return cast.Cells.Select(GetTypedValue).ToArray().ToObject<T>(attrlst.ToArray());
+                    yield return cast.Cells.Select(GetTypedValue).ToObject<T>(attrlst.ToArray());
                 }
             }
         }

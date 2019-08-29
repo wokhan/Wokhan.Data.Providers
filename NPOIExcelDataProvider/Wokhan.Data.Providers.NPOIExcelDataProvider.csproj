@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="NPOI" Version="2.4.1" />
-    <PackageReference Include="Wokhan.Extensions" Version="1.190417.2.78" />
+    <PackageReference Include="Wokhan.Core" Version="1.1908.2902.156" />
   </ItemGroup>
 
   <ItemGroup>

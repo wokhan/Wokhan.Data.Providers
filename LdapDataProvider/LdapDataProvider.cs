@@ -4,7 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.Linq;
-using Wokhan.Collections.Extensions;
+using Wokhan.Collections.Generic.Extensions;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
