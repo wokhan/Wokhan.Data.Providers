@@ -19,6 +19,7 @@
     <None Remove="Resources\Providers\reload.png" />
     <None Remove="Resources\Providers\source-repository-multiple.png" />
     <None Remove="Resources\Providers\web-box.png" />
+    <None Remove="Resources\Samples\AdressBookBase.csv" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +33,7 @@
     <EmbeddedResource Include="Resources\Providers\file-delimited.png" />
     <EmbeddedResource Include="Resources\Providers\reload.png" />
     <EmbeddedResource Include="Resources\Providers\web-box.png" />
+    <EmbeddedResource Include="Resources\Samples\AdressBookBase.csv" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
+using System.Threading;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
@@ -21,6 +25,12 @@ namespace Wokhan.Data.Providers
         //[ProviderParameter("Custom columns (will use random columns if left empty)")]
         //public Dictionary<string, Type> Columns { get; set; }
         public override bool AllowCustomRepository => false;
+
+        [ProviderParameter("Minimum response delay (to simulate slow response rate). [Default = 0ms]")]
+        public int MinDelay { get; private set; } = 0;
+
+        [ProviderParameter("Maximum response delay (to simulate slow response rate). [Default = 200ms]")]
+        public int MaxDelay { get; private set; } = 200;
 
         private static string GetRandomString(Random rnd, int minLength, int maxLength)
         {
@@ -48,23 +58,32 @@ namespace Wokhan.Data.Providers
         public override Type GetDataType(string repository) => repositoryTypes[repository];
 
         private Dictionary<Type, IList> _caches = new Dictionary<Type, IList>();
+
+
         public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             var type = GetDataType(repository);
-            if (!_caches.TryGetValue(type, out var ret))
+            if (!_caches.TryGetValue(type, out var data))
             {
                 //var ctor = type.GetConstructor(new[] { typeof(Random), typeof(int) });
-                ret = Enumerable.Range(0, ItemsCount)
+                data = Enumerable.Range(0, ItemsCount)
                                 .Select(i => (T)Activator.CreateInstance(type, rnd, i))
                                 .ToList();
 
                 if (KeepCache)
                 {
-                    _caches.Add(type, ret);
+                    _caches.Add(type, data);
                 }
             }
 
-            return ret.Cast<T>().AsQueryable();
+            var ret = data.Cast<T>();
+            if (MaxDelay > 0 && MinDelay <= MaxDelay)
+            {
+                var rnd = new Random();
+                ret = ret.Select(_ => { Thread.Sleep(rnd.Next(MinDelay, MaxDelay)); return _; });
+            }
+
+            return ret.AsQueryable();
         }
 
         public override void InvalidateColumnsCache(string repository)
@@ -85,6 +104,16 @@ namespace Wokhan.Data.Providers
 
         public class AddressBookData
         {
+            public static readonly List<string> lastnames;
+            public static readonly List<string> firstnames;
+            public static readonly List<string> cities;
+            public static readonly List<string> countries;
+
+            private string GetRandomAdressData(Random rnd, List<string> reference)
+            {
+                return reference.ElementAt(rnd.Next() % reference.Count);
+            }
+
             public int RowId { get; private set; }
 
             [ColumnDescription(IsKey = true)]
@@ -95,14 +124,29 @@ namespace Wokhan.Data.Providers
 
             public int Age { get; private set; }
 
-            public string PhoneNumber { get; private set; }
+            public string City { get; private set; }
+
+            public string Country { get; private set; }
+
+            static AddressBookData()
+            {
+                using (var sr = new StreamReader(Assembly.GetEntryAssembly().GetManifestResourceStream("Samples/AdresseBookBase.csv")))
+                {
+                    var refdata = sr.ReadToEnd().Split("\r\n").Select(s => s.Split(';'));
+                    lastnames = refdata.Select(r => r.ElementAtOrDefault(0)).ToList();
+                    firstnames = refdata.Select(r => r.ElementAtOrDefault(1)).ToList();
+                    cities = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();
+                    countries = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();
+                }
+            }
 
             public AddressBookData(Random rnd, int i)
             {
                 RowId = i;
-                Lastname = GetRandomString(rnd, 3, 10);
-                Firstname = GetRandomString(rnd, 3, 10);
-                PhoneNumber = GetRandomString(rnd, 10, 10);
+                Lastname = GetRandomAdressData(rnd, lastnames);
+                Firstname = GetRandomAdressData(rnd, firstnames);
+                City = GetRandomAdressData(rnd, cities);
+                Country = GetRandomAdressData(rnd, countries);
                 Age = rnd.Next(1, 120);
             }
         }
