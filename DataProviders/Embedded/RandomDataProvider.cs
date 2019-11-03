@@ -38,17 +38,20 @@ namespace Wokhan.Data.Providers
             return UTF8Encoding.UTF8.GetString(buffer.Select(b => (byte)(b % 127)).ToArray());
         }
 
-        private Random rnd = new Random();
+        private const string ADDRESS_BOOK = "Address book";
+        private const string RANDOM_DOUBLES = "Random numbers";
+
+        private readonly Random rnd = new Random();
 
         private Dictionary<string, object> _defaultRepositories = new Dictionary<string, object>
         {
-            ["Address book"] = "",
-            ["Random numbers"] = ""
+            [ADDRESS_BOOK] = "",
+            [RANDOM_DOUBLES] = ""
         };
         private Dictionary<string, Type> repositoryTypes = new Dictionary<string, Type>
         {
-            ["Address book"] = typeof(AddressBookData),
-            ["Random numbers"] = typeof(RandomDoubleData)
+            [ADDRESS_BOOK] = typeof(AddressBookData),
+            [RANDOM_DOUBLES] = typeof(RandomDoubleData)
         };
 
         public override Dictionary<string, object> GetDefaultRepositories() => _defaultRepositories;

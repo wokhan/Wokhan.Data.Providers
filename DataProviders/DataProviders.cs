@@ -58,14 +58,10 @@ namespace Wokhan.Data.Providers
             var provprm = GetParameters(ret);
             foreach (var parameter in parameters)
             {
-                var prov = provprm.SelectMany(p => p).SingleOrDefault(p => p.Name == parameter.Key);
+                var prov = provprm.SelectMany(p => p).FirstOrDefault(p => p.Name == parameter.Key);
                 if (prov != null)
                 {
-                    try
-                    {
-                        prov.ValueWrapper = Convert.ChangeType(parameter.Value, prov.MemberType);
-                    }
-                    catch { }
+                    prov.ValueWrapper = parameter.Value;
                 }
             }
 

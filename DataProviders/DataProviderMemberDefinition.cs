@@ -21,7 +21,12 @@ namespace Wokhan.Data.Providers.Bases
         public object ValueWrapper
         {
             get => Container.Type.GetProperty(Name).GetValue(Container);
-            set { Container.Type.GetProperty(Name).SetValue(Container, value); NotifyPropertyChanged(nameof(ValueWrapper)); }
+            set
+            {
+                var prop = Container.Type.GetProperty(Name);
+                prop.SetValue(Container, Convert.ChangeType(value, prop.PropertyType));
+                NotifyPropertyChanged(nameof(ValueWrapper));
+            }
         }
 
         public int Position { get; set; }
