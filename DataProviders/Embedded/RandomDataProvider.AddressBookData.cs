@@ -36,9 +36,11 @@ namespace Wokhan.Data.Providers
 
             public string Country { get; private set; }
 
+            static Random rnd = new Random();
+
             static AddressBookData()
             {
-                using (var sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("Wokhan.Data.Providers.Samples.AddressBookBase.csv")))
+                using (var sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("Wokhan.Data.Providers.Resources.Samples.AddressBookBase.csv")))
                 {
                     var refdata = sr.ReadToEnd().Split("\r\n").Select(s => s.Split(';'));
                     lastnames = refdata.Select(r => r.ElementAtOrDefault(0)).ToList();
@@ -48,7 +50,7 @@ namespace Wokhan.Data.Providers
                 }
             }
 
-            public AddressBookData(Random rnd, int i)
+            public AddressBookData(int i)
             {
                 RowId = i;
                 Lastname = GetRandomAdressData(rnd, lastnames);

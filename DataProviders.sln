@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Ldap"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Database", "Database.Core\Wokhan.Data.Providers.Database.csproj", "{07033D26-130E-4749-95FF-283391CE73E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wokhan.Data.Providers.Tests", "Wokhan.Data.Providers.Tests\Wokhan.Data.Providers.Tests.csproj", "{69BD3587-19DC-422D-B039-63066DD54144}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,18 @@ Global
 		{07033D26-130E-4749-95FF-283391CE73E4}.Release|x64.Build.0 = Release|Any CPU
 		{07033D26-130E-4749-95FF-283391CE73E4}.Release|x86.ActiveCfg = Release|Any CPU
 		{07033D26-130E-4749-95FF-283391CE73E4}.Release|x86.Build.0 = Release|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Debug|x64.Build.0 = Debug|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Debug|x86.Build.0 = Debug|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Release|x64.ActiveCfg = Release|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Release|x64.Build.0 = Release|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Release|x86.ActiveCfg = Release|Any CPU
+		{69BD3587-19DC-422D-B039-63066DD54144}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
