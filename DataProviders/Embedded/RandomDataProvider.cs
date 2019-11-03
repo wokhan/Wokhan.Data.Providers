@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading;
@@ -14,7 +12,7 @@ using Wokhan.Data.Providers.Contracts;
 namespace Wokhan.Data.Providers
 {
     [DataProvider(Category = "Demo", Name = "Random data", Description = "Randomly generated data following simple settings.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/reload.png")]
-    public class RandomDataProvider : AbstractDataProvider, IExposedDataProvider
+    public partial class RandomDataProvider : AbstractDataProvider, IExposedDataProvider
     {
         [ProviderParameter("Number of items")]
         public int ItemsCount { get; set; } = 10000;
@@ -100,68 +98,6 @@ namespace Wokhan.Data.Providers
         public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
         {
             return ColumnDescription.FromType(GetDataType(repository));
-        }
-
-        public class AddressBookData
-        {
-            public static readonly List<string> lastnames;
-            public static readonly List<string> firstnames;
-            public static readonly List<string> cities;
-            public static readonly List<string> countries;
-
-            private string GetRandomAdressData(Random rnd, List<string> reference)
-            {
-                return reference.ElementAt(rnd.Next() % reference.Count);
-            }
-
-            public int RowId { get; private set; }
-
-            [ColumnDescription(IsKey = true)]
-            public string Lastname { get; private set; }
-
-            [ColumnDescription(IsKey = true)]
-            public string Firstname { get; private set; }
-
-            public int Age { get; private set; }
-
-            public string City { get; private set; }
-
-            public string Country { get; private set; }
-
-            static AddressBookData()
-            {
-                using (var sr = new StreamReader(Assembly.GetEntryAssembly().GetManifestResourceStream("Samples/AdresseBookBase.csv")))
-                {
-                    var refdata = sr.ReadToEnd().Split("\r\n").Select(s => s.Split(';'));
-                    lastnames = refdata.Select(r => r.ElementAtOrDefault(0)).ToList();
-                    firstnames = refdata.Select(r => r.ElementAtOrDefault(1)).ToList();
-                    cities = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();
-                    countries = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();
-                }
-            }
-
-            public AddressBookData(Random rnd, int i)
-            {
-                RowId = i;
-                Lastname = GetRandomAdressData(rnd, lastnames);
-                Firstname = GetRandomAdressData(rnd, firstnames);
-                City = GetRandomAdressData(rnd, cities);
-                Country = GetRandomAdressData(rnd, countries);
-                Age = rnd.Next(1, 120);
-            }
-        }
-
-        private class RandomDoubleData
-        {
-            [ColumnDescription(IsKey = true)]
-            public int RowId { get; set; }
-            public double Number { get; set; }
-
-            public RandomDoubleData(Random rnd, int i)
-            {
-                RowId = i;
-                Number = rnd.NextDouble();
-            }
         }
     }
 }
