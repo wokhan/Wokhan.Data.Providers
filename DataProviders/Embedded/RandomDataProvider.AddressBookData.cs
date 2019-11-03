@@ -38,7 +38,7 @@ namespace Wokhan.Data.Providers
 
             static AddressBookData()
             {
-                using (var sr = new StreamReader(Assembly.GetEntryAssembly().GetManifestResourceStream("Wokhan.Data.Providers.Samples.AdresseBookBase.csv")))
+                using (var sr = new StreamReader(Assembly.GetEntryAssembly().GetManifestResourceStream("Wokhan.Data.Providers.Samples.AddressBookBase.csv")))
                 {
                     var refdata = sr.ReadToEnd().Split("\r\n").Select(s => s.Split(';'));
                     lastnames = refdata.Select(r => r.ElementAtOrDefault(0)).ToList();
