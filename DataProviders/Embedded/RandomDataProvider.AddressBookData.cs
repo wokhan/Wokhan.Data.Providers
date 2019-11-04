@@ -36,7 +36,7 @@ namespace Wokhan.Data.Providers
 
             public string Country { get; private set; }
 
-            static Random rnd = new Random();
+            Random rnd = new Random();
 
             static AddressBookData()
             {

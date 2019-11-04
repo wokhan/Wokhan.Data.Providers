@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace Wokhan.Data.Providers.Tests
 {
@@ -8,7 +9,10 @@ namespace Wokhan.Data.Providers.Tests
         [TestMethod]
         public void AddressBookDataInit()
         {
-            new RandomDataProvider.AddressBookData(0);
+            var randy = new RandomDataProvider();
+            var data = randy.GetQueryable<RandomDataProvider.AddressBookData>(RandomDataProvider.ADDRESS_BOOK);
+            
+            Assert.AreEqual(data.Count(), randy.ItemsCount);
         }
     }
 }

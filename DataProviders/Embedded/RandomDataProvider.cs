@@ -38,8 +38,8 @@ namespace Wokhan.Data.Providers
             return UTF8Encoding.UTF8.GetString(buffer.Select(b => (byte)(b % 127)).ToArray());
         }
 
-        private const string ADDRESS_BOOK = "Address book";
-        private const string RANDOM_DOUBLES = "Random numbers";
+        public const string ADDRESS_BOOK = "Address book";
+        public const string RANDOM_DOUBLES = "Random numbers";
 
         private readonly Random rnd = new Random();
 
@@ -68,7 +68,7 @@ namespace Wokhan.Data.Providers
             {
                 //var ctor = type.GetConstructor(new[] { typeof(Random), typeof(int) });
                 data = Enumerable.Range(0, ItemsCount)
-                                .Select(i => (T)Activator.CreateInstance(type, rnd, i))
+                                .Select(i => (T)Activator.CreateInstance(type, i))
                                 .ToList();
 
                 if (KeepCache)
@@ -78,11 +78,11 @@ namespace Wokhan.Data.Providers
             }
 
             var ret = data.Cast<T>();
-            if (MaxDelay > 0 && MinDelay <= MaxDelay)
+            /*if (MaxDelay > 0 && MinDelay <= MaxDelay)
             {
                 var rnd = new Random();
                 ret = ret.Select(_ => { Thread.Sleep(rnd.Next(MinDelay, MaxDelay)); return _; });
-            }
+            }*/
 
             return ret.AsQueryable();
         }

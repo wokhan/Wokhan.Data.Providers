@@ -12,7 +12,9 @@ namespace Wokhan.Data.Providers
             public int RowId { get; set; }
             public double Number { get; set; }
 
-            public RandomDoubleData(Random rnd, int i)
+            Random rnd = new Random();
+
+            public RandomDoubleData(int i)
             {
                 RowId = i;
                 Number = rnd.NextDouble();
