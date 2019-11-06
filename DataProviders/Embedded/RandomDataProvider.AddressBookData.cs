@@ -19,7 +19,7 @@ namespace Wokhan.Data.Providers
 
             private string GetRandomAdressData(Random rnd, List<string> reference)
             {
-                return reference.ElementAt(rnd.Next() % reference.Count);
+                return reference.ElementAt(rnd.Next(0, reference.Count));
             }
 
             public int RowId { get; private set; }
@@ -46,7 +46,7 @@ namespace Wokhan.Data.Providers
                     lastnames = refdata.Select(r => r.ElementAtOrDefault(0)).ToList();
                     firstnames = refdata.Select(r => r.ElementAtOrDefault(1)).ToList();
                     cities = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();
-                    countries = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();
+                    countries = refdata.Select(r => r.ElementAtOrDefault(3)).ToList();
                 }
             }
 
