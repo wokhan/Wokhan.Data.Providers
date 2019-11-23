@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Resources;
 using System.Text;
 using System.Threading;
 using Wokhan.Data.Providers.Attributes;
@@ -78,11 +77,11 @@ namespace Wokhan.Data.Providers
             }
 
             var ret = data.Cast<T>();
-            /*if (MaxDelay > 0 && MinDelay <= MaxDelay)
+            if (MaxDelay > 0 && MinDelay <= MaxDelay)
             {
                 var rnd = new Random();
                 ret = ret.Select(_ => { Thread.Sleep(rnd.Next(MinDelay, MaxDelay)); return _; });
-            }*/
+            }
 
             return ret.AsQueryable();
         }
