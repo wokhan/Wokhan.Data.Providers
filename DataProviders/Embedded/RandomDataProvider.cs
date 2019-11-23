@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
@@ -24,10 +24,10 @@ namespace Wokhan.Data.Providers
         public override bool AllowCustomRepository => false;
 
         [ProviderParameter("Minimum response delay (to simulate slow response rate). [Default = 0ms]")]
-        public int MinDelay { get; private set; } = 0;
+        public int MinDelay { get; set; } = 0;
 
         [ProviderParameter("Maximum response delay (to simulate slow response rate). [Default = 200ms]")]
-        public int MaxDelay { get; private set; } = 200;
+        public int MaxDelay { get; set; } = 200;
 
         private static string GetRandomString(Random rnd, int minLength, int maxLength)
         {
@@ -59,7 +59,6 @@ namespace Wokhan.Data.Providers
 
         private Dictionary<Type, IList> _caches = new Dictionary<Type, IList>();
 
-
         public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
         {
             var type = GetDataType(repository);
@@ -76,14 +75,7 @@ namespace Wokhan.Data.Providers
                 }
             }
 
-            var ret = data.Cast<T>();
-            if (MaxDelay > 0 && MinDelay <= MaxDelay)
-            {
-                var rnd = new Random();
-                ret = ret.Select(_ => { Thread.Sleep(rnd.Next(MinDelay, MaxDelay)); return _; });
-            }
-
-            return ret.AsQueryable();
+            return new DelayedEnumerableQuery<T>(data.Cast<T>(), MinDelay, MaxDelay);
         }
 
         public override void InvalidateColumnsCache(string repository)

@@ -1,18 +1,25 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using Xunit;
 
 namespace Wokhan.Data.Providers.Tests
 {
-    [TestClass]
     public class RandomDataProviderTests
     {
-        [TestMethod]
+        [Fact]
         public void AddressBookDataInit()
         {
             var randy = new RandomDataProvider();
+            randy.ItemsCount = 100;
+            randy.MinDelay = 0;
+            randy.MaxDelay = 100;
+            
             var data = randy.GetQueryable<RandomDataProvider.AddressBookData>(RandomDataProvider.ADDRESS_BOOK);
             
-            Assert.AreEqual(data.Count(), randy.ItemsCount);
+            var count = data.Count();
+            Assert.Equal(randy.ItemsCount, count);
+            Assert.Equal(randy.ItemsCount, data.ToList().Count());
+
+            var orderedCount = data.OrderBy(x => x.Age).Count();
         }
     }
 }
