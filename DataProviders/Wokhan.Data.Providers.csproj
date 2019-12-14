@@ -1,15 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.0;netstandard2.0</TargetFrameworks>
     <AssemblyName>Wokhan.Data.Providers</AssemblyName>
     <Authors>Wokhan Solutions</Authors>
     <Description>Base classes and interfaces for Wokhan's .NET Core Data Providers, providing unified handling for Linq Queryables dynamically.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(TargetFramework)=='netstandard2.0'">
+    <DefineConstants>$(DefineConstants);__NETSTANDARD20__</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Attributes\ColumnsDescriptionAttribute.cs" />
     <Compile Remove="DemoCSVDataProvider.cs" />
+    <Compile Remove="Embedded\CSVDataProvider.cs" />
     <Compile Remove="FileCollectionProvider.cs" />
   </ItemGroup>
 
@@ -28,6 +33,10 @@
     <PackageReference Include="Wokhan.Core" Version="1.1908.2902.156" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
+    
   <ItemGroup>
     <EmbeddedResource Include="Resources\Providers\application.png" />
     <EmbeddedResource Include="Resources\Providers\file-delimited.png" />

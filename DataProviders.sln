@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Ldap"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Database", "Database.Core\Wokhan.Data.Providers.Database.csproj", "{07033D26-130E-4749-95FF-283391CE73E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wokhan.Data.Providers.Tests", "Wokhan.Data.Providers.Tests\Wokhan.Data.Providers.Tests.csproj", "{69BD3587-19DC-422D-B039-63066DD54144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wokhan.Data.Providers.Tests", "Wokhan.Data.Providers.Tests\Wokhan.Data.Providers.Tests.csproj", "{69BD3587-19DC-422D-B039-63066DD54144}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D73BD420-E6CD-40E1-9803-39F10C4979A6}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

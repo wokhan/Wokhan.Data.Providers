@@ -42,7 +42,7 @@ namespace Wokhan.Data.Providers
             {
                 using (var sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("Wokhan.Data.Providers.Resources.Samples.AddressBookBase.csv")))
                 {
-                    var refdata = sr.ReadToEnd().Split("\r\n").Select(s => s.Split(';'));
+                    var refdata = sr.ReadToEnd().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Split(';'));
                     lastnames = refdata.Select(r => r.ElementAtOrDefault(0)).ToList();
                     firstnames = refdata.Select(r => r.ElementAtOrDefault(1)).ToList();
                     cities = refdata.Select(r => r.ElementAtOrDefault(2)).ToList();

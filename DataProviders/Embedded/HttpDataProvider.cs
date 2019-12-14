@@ -59,7 +59,7 @@ namespace Wokhan.Data.Providers
             throw new NotImplementedException();
         }
 
-        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class
+        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) 
         {
             var sw = new Stopwatch();
 

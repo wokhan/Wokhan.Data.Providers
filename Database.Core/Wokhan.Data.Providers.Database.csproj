@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
     <AssemblyName>Wokhan.Data.Providers.Database.Core</AssemblyName>
     <RootNamespace>Wokhan.Data.Providers.Database</RootNamespace>
     <Authors>Wokhan Solutions</Authors>
@@ -19,6 +19,10 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.3.0-preview8-19405-04" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
   </ItemGroup>
 
   <ItemGroup>
