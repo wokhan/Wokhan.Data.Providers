@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
     <Authors>Wokhan Solutions</Authors>
     <Description>A data provider to retrieve TIBCO MDM data as a linq Queryable datasource.</Description>
   </PropertyGroup>
