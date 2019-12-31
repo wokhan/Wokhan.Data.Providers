@@ -120,9 +120,9 @@ namespace Wokhan.Data.Providers.Bases
 
         public virtual string Host { get; set; } = "localhost";
 
-        public Type Type { get { return this.GetType(); } }
+        public Type Type => this.GetType();
 
-        public DataProviderDefinition Definition => DataProviders.AllProviders.Single(d => d.Name == this.Name);
+        public DataProviderDefinition Definition => DataProviders.AllProviders.Single(d => d.Type == this.Type);
 
         private Dictionary<string, object> _repositories = new Dictionary<string, object>();
         [DataMember]
