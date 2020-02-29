@@ -11,19 +11,11 @@
         "dependencies": {
           "NETStandard.Library": "2.0.3",
           "NPOI": "2.4.1",
-          "Wokhan.Core": "1.1908.2902.156",
+          "Wokhan.Core": "1.2002.2901.219",
           "Wokhan.Data.Providers": "1.0.0"
         },
         "runtime": {
           "Wokhan.Data.Providers.NPOIExcelDataProvider.dll": {}
-        }
-      },
-      "Microsoft.CSharp/4.5.0": {
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.CSharp.dll": {
-            "assemblyVersion": "4.0.4.0",
-            "fileVersion": "4.6.26515.6"
-          }
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
@@ -33,11 +25,11 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
-      "Newtonsoft.Json/12.0.2": {
+      "Newtonsoft.Json/12.0.3": {
         "runtime": {
           "lib/netstandard2.0/Newtonsoft.Json.dll": {
             "assemblyVersion": "12.0.0.0",
-            "fileVersion": "12.0.2.23222"
+            "fileVersion": "12.0.3.23909"
           }
         }
       },
@@ -111,14 +103,14 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.Linq.Dynamic.Core/1.0.18": {
+      "System.Linq.Dynamic.Core/1.0.20": {
         "dependencies": {
           "System.Reflection.Emit": "4.3.0"
         },
         "runtime": {
           "lib/netstandard2.0/System.Linq.Dynamic.Core.dll": {
-            "assemblyVersion": "1.0.18.0",
-            "fileVersion": "1.0.18.0"
+            "assemblyVersion": "1.0.20.0",
+            "fileVersion": "1.0.20.0"
           }
         }
       },
@@ -269,24 +261,23 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "Wokhan.Core/1.1908.2902.156": {
+      "Wokhan.Core/1.2002.2901.219": {
         "dependencies": {
-          "Microsoft.CSharp": "4.5.0",
-          "System.Linq.Dynamic.Core": "1.0.18"
+          "System.Linq.Dynamic.Core": "1.0.20"
         },
         "runtime": {
           "lib/netstandard2.0/Wokhan.Core.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
+            "assemblyVersion": "1.2002.2901.219",
+            "fileVersion": "1.2002.2901.219"
           }
         }
       },
       "Wokhan.Data.Providers/1.0.0": {
         "dependencies": {
-          "Newtonsoft.Json": "12.0.2",
-          "System.Linq.Dynamic.Core": "1.0.18",
+          "Newtonsoft.Json": "12.0.3",
+          "System.Linq.Dynamic.Core": "1.0.20",
           "System.Runtime.Loader": "4.3.0",
-          "Wokhan.Core": "1.1908.2902.156"
+          "Wokhan.Core": "1.2002.2901.219"
         },
         "runtime": {
           "Wokhan.Data.Providers.dll": {}
@@ -299,13 +290,6 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
-    },
-    "Microsoft.CSharp/4.5.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ==",
-      "path": "microsoft.csharp/4.5.0",
-      "hashPath": "microsoft.csharp.4.5.0.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
@@ -328,12 +312,12 @@
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
     },
-    "Newtonsoft.Json/12.0.2": {
+    "Newtonsoft.Json/12.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-rTK0s2EKlfHsQsH6Yx2smvcTCeyoDNgCW7FEYyV01drPlh2T243PR2DiDXqtC5N4GDm4Ma/lkxfW5a/4793vbA==",
-      "path": "newtonsoft.json/12.0.2",
-      "hashPath": "newtonsoft.json.12.0.2.nupkg.sha512"
+      "sha512": "sha512-6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg==",
+      "path": "newtonsoft.json/12.0.3",
+      "hashPath": "newtonsoft.json.12.0.3.nupkg.sha512"
     },
     "NPOI/2.4.1": {
       "type": "package",
@@ -377,12 +361,12 @@
       "path": "system.io/4.3.0",
       "hashPath": "system.io.4.3.0.nupkg.sha512"
     },
-    "System.Linq.Dynamic.Core/1.0.18": {
+    "System.Linq.Dynamic.Core/1.0.20": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-VonVK0xHQLzm+H6n5TE6wDwoCrVMuTBMdGQrXDfIAmf/klG/sJUai3bkMTlTgtqArB1NYEdWxUVqpPFnMZwVog==",
-      "path": "system.linq.dynamic.core/1.0.18",
-      "hashPath": "system.linq.dynamic.core.1.0.18.nupkg.sha512"
+      "sha512": "sha512-2vIL+8LXG+AORiNfUHAl8ZRQdJ6KbSNwRfmbDjweJfQYW691ZqdnibQIdeKInl1X77gbL6EoSXbatK/hSn9GWw==",
+      "path": "system.linq.dynamic.core/1.0.20",
+      "hashPath": "system.linq.dynamic.core.1.0.20.nupkg.sha512"
     },
     "System.Memory/4.5.0": {
       "type": "package",
@@ -489,12 +473,12 @@
       "path": "system.threading.tasks/4.3.0",
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
     },
-    "Wokhan.Core/1.1908.2902.156": {
+    "Wokhan.Core/1.2002.2901.219": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-EoxQlwiPsslEdkFE1Rxl/v3QeiOUm7lyqys0ls1atQF1tyFwlAlWb8XG3p3CmV9jxwxP/1gD9xYC7uWnmZEtXA==",
-      "path": "wokhan.core/1.1908.2902.156",
-      "hashPath": "wokhan.core.1.1908.2902.156.nupkg.sha512"
+      "sha512": "sha512-lf0Nohw4DsM/Z0oaKTrZOUYuP36x1mrKC18gVcTASTaXy7Y/xgcIefOgUOxlSLFUSz56oROH5t8QuOwHXZTfhg==",
+      "path": "wokhan.core/1.2002.2901.219",
+      "hashPath": "wokhan.core.1.2002.2901.219.nupkg.sha512"
     },
     "Wokhan.Data.Providers/1.0.0": {
       "type": "project",
