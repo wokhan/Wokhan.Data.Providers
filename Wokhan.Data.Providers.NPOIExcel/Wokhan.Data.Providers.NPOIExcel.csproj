@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataProviders\Wokhan.Data.Providers.csproj" />
+    <ProjectReference Include="..\Wokhan.Data.Providers\Wokhan.Data.Providers.csproj" />
   </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database.Core\Wokhan.Data.Providers.Database.csproj" />
+    <ProjectReference Include="..\Wokhan.Data.Providers.Database\Wokhan.Data.Providers.Database.csproj" />
   </ItemGroup>
 
 </Project>
