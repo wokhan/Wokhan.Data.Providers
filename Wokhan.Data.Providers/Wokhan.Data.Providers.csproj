@@ -2,11 +2,20 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netstandard2.0</TargetFrameworks>
-    <AssemblyName>Wokhan.Data.Providers</AssemblyName>
-    <Authors>Wokhan Solutions</Authors>
-    <Description>Base classes and interfaces for Wokhan's .NET Core Data Providers, providing unified handling for Linq Queryables dynamically.</Description>
+    <!--<AssemblyName>Wokhan.Data.Providers</AssemblyName>-->
   </PropertyGroup>
 
+  <PropertyGroup Label="Nuget">
+    <Authors>Jérôme Saliba (Khan / wokhan@github)</Authors>
+    <Description>Base classes and interfaces for Wokhan's .NET Core Data Providers, providing unified handling for Linq Queryables dynamically.</Description>
+    <PackageProjectUrl>https://github.com/wokhansoft/Wokhan.Data.Providers</PackageProjectUrl>
+    <Copyright>Wokhan Solutions 2019-2022</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
+    <Company>Wokhan Solutions</Company>
+    <PackageTags>.NETCore .NET Linq Data DataProvider</PackageTags>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="$(TargetFramework)=='netstandard2.0'">
     <DefineConstants>$(DefineConstants);__NETSTANDARD20__</DefineConstants>
   </PropertyGroup>

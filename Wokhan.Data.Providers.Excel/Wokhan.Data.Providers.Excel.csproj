@@ -2,8 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <Authors>Wokhan Solutions</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Nuget">
+    <Authors>Jérôme Saliba (Khan / wokhan@github)</Authors>
     <Description>A data provider to retrieve Excel data as a linq Queryable datasource.</Description>
+    <PackageProjectUrl>https://github.com/wokhansoft/Wokhan.Data.Providers</PackageProjectUrl>
+    <Copyright>Wokhan Solutions 2019-2022</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
+    <Company>Wokhan Solutions</Company>
+    <PackageTags>.NETCore .NET Linq Data Excel DataProvider</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

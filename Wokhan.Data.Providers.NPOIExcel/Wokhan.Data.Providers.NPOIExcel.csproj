@@ -2,10 +2,19 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netstandard2.0</TargetFrameworks>
-    <Authors>Wokhan Solutions</Authors>
-    <Description>A data provider to retrieve Excel data as a linq Queryable datasource, using Apache's NPOI library.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Label="Nuget">
+    <Authors>Jérôme Saliba (Khan / wokhan@github)</Authors>
+    <Description>A data provider to retrieve Excel data as a linq Queryable datasource, using Apache's NPOI library.</Description>
+    <PackageProjectUrl>https://github.com/wokhansoft/Wokhan.Data.Providers</PackageProjectUrl>
+    <Copyright>Wokhan Solutions 2019-2022</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
+    <Company>Wokhan Solutions</Company>
+    <PackageTags>.NETCore .NET Linq Data Excel NPOI DataProvider</PackageTags>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Remove="Resources\file-excel.png" />
   </ItemGroup>

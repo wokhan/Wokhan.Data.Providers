@@ -2,10 +2,19 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
-    <AssemblyName>Wokhan.Data.Providers.Database.Core</AssemblyName>
-    <RootNamespace>Wokhan.Data.Providers.Database</RootNamespace>
-    <Authors>Wokhan Solutions</Authors>
+    <!--<AssemblyName>Wokhan.Data.Providers.Database</AssemblyName>-->
+    <!--<RootNamespace>Wokhan.Data.Providers.Database</RootNamespace>-->
+  </PropertyGroup>
+
+  <PropertyGroup Label="Nuget">
+    <Authors>Jérôme Saliba (Khan / wokhan@github)</Authors>
     <Description>Base classes and interfaces for Wokhan's .NET Core database Data Providers.</Description>
+    <PackageProjectUrl>https://github.com/wokhansoft/Wokhan.Data.Providers</PackageProjectUrl>
+    <Copyright>Wokhan Solutions 2019-2022</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
+    <Company>Wokhan Solutions</Company>
+    <PackageTags>.NETCore .NET Linq Data Database DataProvider</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
