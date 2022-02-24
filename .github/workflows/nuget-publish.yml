@@ -49,4 +49,4 @@ jobs:
       run: dotnet pack --no-build --no-restore --output Wokhan.Data.Providers/bin/Release/ --configuration Release -p:PackageVersion=${{ env.PACKAGE_VERSION }}
 
     - name: Publish
-      run: dotnet nuget push **/bin/Release/*.nupkg --api-key ${{ secrets.nuget_apikey }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push Wokhan.Data.Providers/bin/Release/*.nupkg --api-key ${{ secrets.nuget_apikey }} --source https://api.nuget.org/v3/index.json

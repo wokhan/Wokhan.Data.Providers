@@ -21,6 +21,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		global.json = global.json
+		.github\workflows\nuget-publish.yml = .github\workflows\nuget-publish.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{D623B3ED-0BE9-4FAB-8DF6-473F29B44D42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{237F6F6D-58D9-4EA0-8EC1-8BFB9EB91F3F}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\nuget-publish.yml = .github\workflows\nuget-publish.yml
 	EndProjectSection
 EndProject
 Global
@@ -120,6 +128,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D623B3ED-0BE9-4FAB-8DF6-473F29B44D42} = {D73BD420-E6CD-40E1-9803-39F10C4979A6}
+		{237F6F6D-58D9-4EA0-8EC1-8BFB9EB91F3F} = {D623B3ED-0BE9-4FAB-8DF6-473F29B44D42}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4BB7C6B8-DAF4-4E01-B502-9E26075F82B2}
