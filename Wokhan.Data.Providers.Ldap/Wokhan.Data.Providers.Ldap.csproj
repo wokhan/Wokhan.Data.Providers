@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -13,6 +13,7 @@
     <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
     <Company>Wokhan Solutions</Company>
     <PackageTags>.NETCore .NET Linq LDAP DataProvider</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   
   <ItemGroup>
@@ -24,7 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.DirectoryServices" Version="5.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.DirectoryServices" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

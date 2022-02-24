@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -13,6 +13,7 @@
     <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
     <Company>Wokhan Solutions</Company>
     <PackageTags>.NETCore .NET Linq Data Database Oracle SQL DataProvider</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   
   <ItemGroup>
@@ -25,7 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.3" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.50" />
     <PackageReference Include="Wokhan.Core" Version="0.9.3-beta" />
   </ItemGroup>
 

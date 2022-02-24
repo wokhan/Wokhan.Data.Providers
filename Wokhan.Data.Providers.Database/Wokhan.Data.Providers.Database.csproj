@@ -1,9 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
-    <!--<AssemblyName>Wokhan.Data.Providers.Database</AssemblyName>-->
-    <!--<RootNamespace>Wokhan.Data.Providers.Database</RootNamespace>-->
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -15,6 +13,7 @@
     <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
     <Company>Wokhan Solutions</Company>
     <PackageTags>.NETCore .NET Linq Data Database DataProvider</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +27,10 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">

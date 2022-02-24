@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -13,6 +13,7 @@
     <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
     <Company>Wokhan Solutions</Company>
     <PackageTags>.NETCore .NET Linq Data Excel DataProvider</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,10 @@
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Wokhan.Core" Version="1.2002.2901.219" />
   </ItemGroup>
 
