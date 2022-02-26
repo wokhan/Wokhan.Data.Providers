@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.Linq;
+
 using Wokhan.Collections.Generic.Extensions;
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
@@ -23,7 +24,9 @@ namespace Wokhan.Data.Providers
 
         private string[] _attributes = new[] { "dn" };
 
-        public string[] Attributes { get => _attributes;
+        public string[] Attributes
+        {
+            get => _attributes;
             set
             {
                 _attributes = value;
@@ -57,7 +60,7 @@ namespace Wokhan.Data.Providers
             string qry = UpdateValue(this.Query, values);
             string userdn = UpdateValue(this.UserDn, values);
             string passwd = UpdateValue(this.Password, values);
-
+            
             var authOptions = (this.UseSSL ? AuthenticationTypes.SecureSocketsLayer : AuthenticationTypes.None) | (this.UseServerBind ? AuthenticationTypes.ServerBind : AuthenticationTypes.None);
 
             using (var root = new DirectoryEntry(Uri + "/" + RootDn, userdn, passwd, authOptions))

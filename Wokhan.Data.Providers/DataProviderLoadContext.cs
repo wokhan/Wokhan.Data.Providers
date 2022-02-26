@@ -4,6 +4,9 @@ using System.Runtime.Loader;
 
 namespace Wokhan.Data.Providers
 {
+    /// <summary>
+    /// Allows to resolve and load assemblies from a custom path.
+    /// </summary>
     internal class DataProviderLoadContext : AssemblyLoadContext
     {
 #if !__NETSTANDARD20__
@@ -42,7 +45,7 @@ namespace Wokhan.Data.Providers
             {
                 return LoadUnmanagedDllFromPath(libraryPath);
             }
-            
+
             return IntPtr.Zero;
 #endif
         }

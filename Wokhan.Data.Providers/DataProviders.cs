@@ -9,16 +9,31 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    public class DataProviders
+    /// <summary>
+    /// Utility class that hosts a list of all data providers, allowing to import new ones.
+    /// Also provides method to access they columns/attributes, parameters, or to create a new instance directly.
+    /// </summary>
+    public static class DataProviders
     {
+        /// <summary>
+        /// List of all available providers (including scanned ones).
+        /// </summary>
+        public static List<DataProviderDefinition> AllProviders { get; private set; }
+
         static DataProviders()
         {
             AllProviders = FromTypes(false, Assembly.GetExecutingAssembly().GetTypes()).ToList();
         }
 
-        public static List<IGrouping<string, DataProviderMemberDefinition>> GetParameters(IDataProvider prv)
+        /// <summary>
+        /// Retrieves all parameters for a <see cref="IDataProvider"/>.
+        /// Parameters are grouped using the <see cref="DataProviderMemberDefinition.ExclusionGroup"/> (or "Default" if null) to allow exclusive parameters to be used altogether.
+        /// </summary>
+        /// <param name="provider">Provider to get members from.</param>
+        /// <returns>A list of <see cref="DataProviderMemberDefinition"/>, grouped by the <see cref="DataProviderMemberDefinition.ExclusionGroup"/> property.</returns>
+        public static List<IGrouping<string, DataProviderMemberDefinition>> GetParameters(IDataProvider provider)
         {
-            return prv.Type.GetProperties()
+            return provider.Type.GetProperties()
                     .Select(p =>
                     {
                         var attr = p.GetCustomAttributes<ProviderParameterAttribute>(true).SingleOrDefault();
@@ -29,8 +44,8 @@ namespace Wokhan.Data.Providers
                         return new DataProviderMemberDefinition
                         {
                             Position = attr.Position,
-                            IsActive = prv.SelectedGroups.Contains(attr.ExclusionGroup),
-                            Container = prv,
+                            IsActive = provider.SelectedGroups.Contains(attr.ExclusionGroup),
+                            Container = provider,
                             Name = p.Name,
                             Description = attr.Description,
                             MemberType = p.PropertyType,
@@ -40,12 +55,21 @@ namespace Wokhan.Data.Providers
                             ValuesGetter = attr.Method
                         };
                     })
-                    .Where(_ => _?.Description != null)
-                    .OrderBy(_ => _.Position).ThenBy(_ => _.Description)
-                    .GroupBy(_ => _.ExclusionGroup ?? "Default")
+                    .Where(definition => definition != null)
+                    .OrderBy(definition => definition.Position).ThenBy(definition => definition.Description)
+                    .GroupBy(definition => definition.ExclusionGroup ?? "Default")
                     .ToList();
         }
 
+
+        /// <summary>
+        /// Creates an instance of a provider (using it's name).
+        /// Requires a dictionary describing the parameters for this provider.
+        /// </summary>
+        /// <param name="provider">Name of the provider to create an instance of.</param>
+        /// <param name="parameters">A dictionary containing all parameters to set the provider properties from.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static IDataProvider CreateInstance(string provider, Dictionary<string, object> parameters)
         {
             var tp = AllProviders.FirstOrDefault(a => a.Name == provider);
@@ -55,6 +79,10 @@ namespace Wokhan.Data.Providers
             }
 
             var ret = (IDataProvider)Activator.CreateInstance(tp.Type);
+            if (ret == null)
+            {
+                throw new NullReferenceException("Activator failed to create an instance for the given type");
+            }
             var provprm = GetParameters(ret);
             foreach (var parameter in parameters)
             {
@@ -68,6 +96,11 @@ namespace Wokhan.Data.Providers
             return ret;
         }
 
+        /// <summary>
+        /// Scans a folder and adds any data providers found (i.e. implementing <see cref="IExposedDataProvider"/>).
+        /// </summary>
+        /// <param name="basePath">Path to the directory to scan.</param>
+        /// <exception cref="DirectoryNotFoundException"></exception>
         public static void AddPath(string basePath)
         {
             if (!Directory.Exists(basePath))
@@ -96,11 +129,20 @@ namespace Wokhan.Data.Providers
             }
         }
 
+        /// <summary>
+        /// Directly add data providers from the specified assemblies.
+        /// </summary>
+        /// <param name="assemblies">Assemblies to retrieve data providers from.</param>
         public static void AddAssemblies(params Assembly[] assemblies)
         {
             AllProviders.AddRange(FromTypes(false, assemblies.SelectMany(a => a.GetTypes()).ToArray()));
         }
 
+        /// <summary>
+        /// Directly add data providers from the specified types.
+        /// </summary>
+        /// <param name="types">Types to to retrieve data providers from.</param>
+        /// <exception cref="ArgumentException"></exception>
         public static void AddTypes(params Type[] types)
         {
             var failed = types.FirstOrDefault(t => !t.IsClass || !typeof(IExposedDataProvider).IsAssignableFrom(t));
@@ -118,7 +160,5 @@ namespace Wokhan.Data.Providers
                         .Where(t => t != null)
                         .ToArray();
         }
-
-        public static List<DataProviderDefinition> AllProviders { get; private set; }
     }
 }

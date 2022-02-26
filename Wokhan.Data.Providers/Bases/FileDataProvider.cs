@@ -7,7 +7,7 @@ namespace Wokhan.Data.Providers.Bases
     public abstract class FileDataProvider : AbstractDataProvider
     {
         protected Encoding _encoding = UTF8Encoding.UTF8;
-        [ProviderParameter("Encoding", false, typeof(FileDataProvider), "GetEncoding")]
+        [ProviderParameter("Encoding", typeof(FileDataProvider), "GetEncoding")]
         public string Encoding
         {
             get { return _encoding.WebName.ToString(); }

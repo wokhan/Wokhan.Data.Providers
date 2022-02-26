@@ -10,6 +10,9 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers.Bases
 {
+    /// <summary>
+    /// Serves as a base class for all Data Providers.
+    /// </summary>
     [DataContract]
     public abstract class AbstractDataProvider : IDataProvider
     {
@@ -37,11 +40,10 @@ namespace Wokhan.Data.Providers.Bases
 
         private static readonly Dictionary<string, Type> cachedTypes = new Dictionary<string, Type>();
 
-
         [DataMember]
         public virtual string Name { get; set; }
 
-        public virtual Dictionary<string, object> GetDefaultRepositories()
+        public virtual Dictionary<string, object>? GetDefaultRepositories()
         {
             return null;
         }
@@ -68,9 +70,9 @@ namespace Wokhan.Data.Providers.Bases
             return ret;
         }
 
-        public virtual Type GetDataType(string repository)
+        public virtual Type? GetDataType(string repository)
         {
-            Type ret;
+            Type? ret;
             lock (cachedTypes)
             {
                 var cachekey = $"{this.GetHashCode()}_{repository}";
@@ -90,6 +92,13 @@ namespace Wokhan.Data.Providers.Bases
             return ret;
         }
 
+        /// <summary>
+        /// Gets a formatted value for a given property. As of now... only return a string from an object.
+        /// TODO: Check if really useful somewhere with the initial formatting implementation.
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public virtual string GetFormattedValue(object src, object c)
         {
             /*if (CustomFormats != null && CustomFormats.ContainsKey(GetFormatKey(null, c)))
@@ -124,7 +133,9 @@ namespace Wokhan.Data.Providers.Bases
 
         public DataProviderDefinition Definition => DataProviders.AllProviders.Single(d => d.Type == this.Type);
 
+        
         private Dictionary<string, object> _repositories = new Dictionary<string, object>();
+        
         [DataMember]
         public Dictionary<string, object> Repositories
         {
@@ -134,21 +145,14 @@ namespace Wokhan.Data.Providers.Bases
 
         public virtual bool AllowCustomRepository { get; } = true;
 
-
         public AbstractDataProvider()
         {
             _getQueryableGenericMethodBase = this.GetType().GetMethods().First(m => m.Name == nameof(GetQueryable) && m.IsGenericMethodDefinition);
         }
 
         private MethodInfo _getQueryableGenericMethodBase;
-        /// <summary>
-        /// Gets typed data dynamically (for when the target type is unknown)
-        /// </summary>
-        /// <param name="repository">Source repository</param>
-        /// <param name="attributes">Attributes (amongst repository's ones)</param>
-        /// <param name="keys">Unused</param>
-        /// <returns></returns>
-        public IQueryable GetQueryable(string repository = null, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        
+        public IQueryable GetQueryable(string? repository = null, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null)
         {
             var dataType = this.GetDataType(repository);
             //var keyType = this.GetKeyType(repository);
@@ -158,8 +162,7 @@ namespace Wokhan.Data.Providers.Bases
             return data;
         }
 
-        public abstract IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) where T : class;
-
+        public abstract IQueryable<T> GetQueryable<T>(string? repository, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null) where T : class;
 
         protected string UpdateValue(string src, IList<Dictionary<string, string>> values)
         {
@@ -171,14 +174,19 @@ namespace Wokhan.Data.Providers.Bases
             return Regex.Replace(src, @"\$([^\d]*)(\d*)\$", m => values[int.TryParse(m.Groups[2].Value, out int res) ? res : 0][m.Groups[1].Value], RegexOptions.Compiled);
         }
 
-        protected virtual long Count(string repository = null)
+        /// <summary>
+        /// Gets the count for the specified repository.
+        /// </summary>
+        /// <param name="repository">Name of the repository.</param>
+        /// <returns>A count as retrieved by IQueryable.Count() on the specified repository.</returns>
+        protected virtual long Count(string? repository = null)
         {
             return this.GetQueryable(repository).Count();
         }
 
         public abstract bool Test(out string details);
 
-        public abstract List<ColumnDescription> GetColumns(string repository, IList<string> names = null);
+        public abstract List<ColumnDescription> GetColumns(string? repository, IList<string>? names = null);
 
     }
 }

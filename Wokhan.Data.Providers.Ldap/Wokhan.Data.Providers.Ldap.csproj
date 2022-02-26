@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
-    <Authors>Jérôme Saliba (Khan / wokhan@github)</Authors>
+    <Authors>Jérôme Saliba (wokhan@github)</Authors>
     <Description>A data provider to retrieve LDAP data as a Linq Queryable datasource.</Description>
     <PackageProjectUrl>https://github.com/wokhansoft/Wokhan.Data.Providers</PackageProjectUrl>
     <Copyright>Wokhan Solutions 2019-2022</Copyright>

@@ -29,10 +29,10 @@ namespace Wokhan.Data.Providers.Bases
         [ProviderParameter("Username", ExclusionGroup = "Connection details", Position = 40)]
         public string Username { get; set; }
 
-        [ProviderParameter("Password", true, ExclusionGroup = "Connection details", Position = 50)]
+        [ProviderParameter("Password", IsEncoded = true, ExclusionGroup = "Connection details", Position = 50)]
         public string Password { get; set; }
 
-        [ProviderParameter("Globally excluded columns", true, ExclusionGroup = "Advanced", Position = 60)]
+        [ProviderParameter("Globally excluded columns", ExclusionGroup = "Advanced", Position = 60)]
         public string[] HiddenFields { get; set; }
 
         public Dictionary<string, string> TODOColumnsRelAttributes { get; private set; }
@@ -132,6 +132,7 @@ namespace Wokhan.Data.Providers.Bases
 
             return ret;
         }
+
 
         public Type GetRealType(DataColumn c)
         {
