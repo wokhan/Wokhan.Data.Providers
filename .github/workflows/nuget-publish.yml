@@ -30,7 +30,7 @@ jobs:
       run: dotnet tool install xmldocmd -g
 
     - name: Generate documentation (generate)
-      run: xmldocmd Wokhan.Data.Providers/bin/Release/netcoreapp3.0/Wokhan.Data.Providers.dll docs/generated --source https://github.com/${{ github.repository }} --clean
+      run: xmldocmd Wokhan.Data.Providers/bin/Release/netcoreapp3.1/Wokhan.Data.Providers.dll docs/generated --source https://github.com/${{ github.repository }} --clean
 
     - name: Generate documentation (commit)
       uses: EndBug/add-and-commit@v4.1.0
