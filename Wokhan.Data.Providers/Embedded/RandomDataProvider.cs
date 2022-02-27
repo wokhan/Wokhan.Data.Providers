@@ -7,7 +7,7 @@ using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
 
-namespace Wokhan.Data.Providers
+namespace Wokhan.Data.Providers.Embedded
 {
     /// <summary>
     /// A random data provider with two flavors: fake address book, and a random numbers collection.

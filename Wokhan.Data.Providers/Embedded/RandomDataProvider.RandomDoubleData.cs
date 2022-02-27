@@ -2,7 +2,7 @@
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 
-namespace Wokhan.Data.Providers
+namespace Wokhan.Data.Providers.Embedded
 {
     public partial class RandomDataProvider
     {

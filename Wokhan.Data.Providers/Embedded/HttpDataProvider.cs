@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,11 +9,12 @@ using System.Net;
 using System.Net.Cache;
 using System.Text;
 using System.Xml.Serialization;
+
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
 
-namespace Wokhan.Data.Providers
+namespace Wokhan.Data.Providers.Embedded
 {
     /// <summary>
     /// WIP: A simple provider to query a HTTP URI and retrieve metadata and body.
@@ -93,13 +95,13 @@ namespace Wokhan.Data.Providers
             throw new NotImplementedException();
         }
 
-        public override IQueryable<T> GetQueryable<T>(string? repository, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null) 
+        public override IQueryable<T> GetQueryable<T>(string? repository, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null)
         {
             var sw = new Stopwatch();
 
             string proxy = null;
-            string localurl = UpdateValue(this.Url, values);
-            string localbody = UpdateValue(this.Body, values);
+            string localurl = UpdateValue(Url, values);
+            string localbody = UpdateValue(Body, values);
 
             var req = (HttpWebRequest)WebRequest.Create(localurl);
             req.ServicePoint.ConnectionLimit = 100;
@@ -119,14 +121,14 @@ namespace Wokhan.Data.Providers
             proxy = req.Proxy.GetProxy(req.RequestUri).ToString();
             req.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
-            if (this.ContentType != null)
+            if (ContentType != null)
             {
-                req.ContentType = this.ContentType;
+                req.ContentType = ContentType;
             }
-            this.Headers?.ToList().ForEach(h => req.Headers.Add(h.Key, h.Value));
-            req.Method = this.Method;
+            Headers?.ToList().ForEach(h => req.Headers.Add(h.Key, h.Value));
+            req.Method = Method;
 
-            if (this.Body != null)
+            if (Body != null)
             {
                 sw.Restart();
 
@@ -169,7 +171,7 @@ namespace Wokhan.Data.Providers
 
             sw.Stop();
             statisticsBag?.Add("HandleResponse", sw.ElapsedMilliseconds);
-            
+
             return data.AsQueryable();
         }
     }

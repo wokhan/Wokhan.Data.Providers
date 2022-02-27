@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
 
-namespace Wokhan.Data.Providers
+namespace Wokhan.Data.Providers.Embedded
 {
     /// <summary>
     /// WIP: A data provider to retrieve data from a process' standard output stream.
