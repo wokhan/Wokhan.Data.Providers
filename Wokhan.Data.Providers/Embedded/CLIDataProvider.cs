@@ -8,32 +8,61 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
-    [DataProvider(Category = "Processes", Name = "Process output reader", Description = "Allows to retrieve data from a process standard output stream.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/application.png")]
+    /// <summary>
+    /// WIP: A data provider to retrieve data from a process' standard output stream.
+    /// </summary>
+    [DataProvider(Category = "Processes", Name = "Process output reader", Description = "Allows to retrieve data from a process' standard output stream.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/application.png")]
     public class CLIDataProvider : AbstractDataProvider, IExposedDataProvider
     {
-
+        /// <summary>
+        /// Executable path
+        /// </summary>
         [ProviderParameter("Application path")]
         public string Path { get; set; }
 
+        /// <summary>
+        /// Arguments to use when starting the process
+        /// </summary>
         [ProviderParameter("Arguments")]
         public string Arguments { get; set; }
 
-        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        /// <summary>
+        /// Not available for this provider.
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public override List<ColumnDescription> GetColumns(string? repository, IList<string>? names = null)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Not available for this provider.
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public override void InvalidateColumnsCache(string repository)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Not available for this provider.
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public override bool Test(out string details)
         {
             throw new NotImplementedException();
         }
 
-        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string? repository, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null)
         {
             var p = new Process();
             string path = Path;

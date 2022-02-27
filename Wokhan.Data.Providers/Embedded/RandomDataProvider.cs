@@ -2,20 +2,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+
 using Wokhan.Data.Providers.Attributes;
 using Wokhan.Data.Providers.Bases;
 using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
+    /// <summary>
+    /// A random data provider with two flavors: fake address book, and a random numbers collection.
+    /// Mainly used for testing.
+    /// </summary>
     [DataProvider(Category = "Demo", Name = "Random data", Description = "Randomly generated data following simple settings.", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/reload.png")]
     public partial class RandomDataProvider : AbstractDataProvider, IExposedDataProvider
     {
+        /// <summary>
+        /// Number of items to generate
+        /// </summary>
         [ProviderParameter("Number of items")]
         public int ItemsCount { get; set; } = 10000;
 
+        /// <summary>
+        /// Indicates if generated data should be kept and reused for the current session
+        /// </summary>
         [ProviderParameter("Keep data cached for the current session")]
         public bool KeepCache { get; set; } = true;
 
@@ -23,19 +32,25 @@ namespace Wokhan.Data.Providers
         //public Dictionary<string, Type> Columns { get; set; }
         public override bool AllowCustomRepository => false;
 
+        /// <summary>
+        /// Minimum response delay (to simulate slow response rate). [Default = 0ms]
+        /// </summary>
         [ProviderParameter("Minimum response delay (to simulate slow response rate). [Default = 0ms]")]
         public int MinDelay { get; set; } = 0;
 
+        /// <summary>
+        /// Maximum response delay (to simulate slow response rate). [Default = 200ms]
+        /// </summary>
         [ProviderParameter("Maximum response delay (to simulate slow response rate). [Default = 200ms]")]
         public int MaxDelay { get; set; } = 200;
 
-        private static string GetRandomString(Random rnd, int minLength, int maxLength)
-        {
-            var buffer = new byte[rnd.Next(minLength, maxLength)];
-            rnd.NextBytes(buffer);
+        //private static string GetRandomString(Random rnd, int minLength, int maxLength)
+        //{
+        //    var buffer = new byte[rnd.Next(minLength, maxLength)];
+        //    rnd.NextBytes(buffer);
 
-            return UTF8Encoding.UTF8.GetString(buffer.Select(b => (byte)(b % 127)).ToArray());
-        }
+        //    return UTF8Encoding.UTF8.GetString(buffer.Select(b => (byte)(b % 127)).ToArray());
+        //}
 
         public const string ADDRESS_BOOK = "Address book";
         public const string RANDOM_DOUBLES = "Random numbers";
@@ -59,7 +74,7 @@ namespace Wokhan.Data.Providers
 
         private Dictionary<Type, IList> _caches = new Dictionary<Type, IList>();
 
-        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null)
+        public override IQueryable<T> GetQueryable<T>(string? repository, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null)
         {
             var type = GetDataType(repository);
             if (!_caches.TryGetValue(type, out var data))
@@ -89,7 +104,7 @@ namespace Wokhan.Data.Providers
             return true;
         }
 
-        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        public override List<ColumnDescription> GetColumns(string? repository, IList<string>? names = null)
         {
             return ColumnDescription.FromType(GetDataType(repository));
         }

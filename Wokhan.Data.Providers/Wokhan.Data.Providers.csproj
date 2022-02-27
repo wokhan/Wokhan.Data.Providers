@@ -4,6 +4,8 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <LangVersion>8.0</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
@@ -17,7 +19,7 @@
     <PackageTags>.NETCore .NET Linq Data DataProvider</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="$(TargetFramework)=='netstandard2.0'">
     <DefineConstants>$(DefineConstants);__NETSTANDARD20__</DefineConstants>
   </PropertyGroup>
@@ -51,7 +53,7 @@
   <ItemGroup Condition="$(TargetFramework)=='netstandard2.0'">
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
-    
+
   <ItemGroup>
     <EmbeddedResource Include="Resources\Providers\application.png" />
     <EmbeddedResource Include="Resources\Providers\file-delimited.png" />

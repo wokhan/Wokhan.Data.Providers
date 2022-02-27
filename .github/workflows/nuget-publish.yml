@@ -26,17 +26,17 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --no-restore --verbosity normal
 
-    #- name: Generate documentation (retrieve global tool)
-    #  run: dotnet tool install xmldocmd -g
+    - name: Generate documentation (retrieve global tool)
+      run: dotnet tool install xmldocmd -g
 
-    #- name: Generate documentation (generate)
-    #  run: xmldocmd Wokhan.Data.Providers/bin/Release/netcoreapp3.0/Wokhan.Data.Providers.dll docs/generated --source https://github.com/${{ github.repository }} --clean
+    - name: Generate documentation (generate)
+      run: xmldocmd Wokhan.Data.Providers/bin/Release/netcoreapp3.0/Wokhan.Data.Providers.dll docs/generated --source https://github.com/${{ github.repository }} --clean
 
-    #- name: Generate documentation (commit)
-    #  uses: EndBug/add-and-commit@v4.1.0
-    #  with:
-    #    add: docs
-    #    message: Automated documentation update
+    - name: Generate documentation (commit)
+      uses: EndBug/add-and-commit@v4.1.0
+      with:
+        add: docs
+        message: Automated documentation update
 
     #Source: https://dusted.codes/github-actions-for-dotnet-core-nuget-packages#drive-nuget-version-from-git-tags
     - name: Set Nuget package version

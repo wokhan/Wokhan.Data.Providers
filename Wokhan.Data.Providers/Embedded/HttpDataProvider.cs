@@ -14,52 +14,86 @@ using Wokhan.Data.Providers.Contracts;
 
 namespace Wokhan.Data.Providers
 {
+    /// <summary>
+    /// WIP: A simple provider to query a HTTP URI and retrieve metadata and body.
+    /// Only works for JSON and XML responses as of now.
+    /// </summary>
     [DataProvider(Category = "Database", IsDirectlyBindable = true, Name = "Http Data Provider", Copyright = "Developed by Wokhan Solutions", Icon = "Resources/Providers/web-box.png")]
     public class HttpDataProvider : AbstractDataProvider, IExposedDataProvider
     {
+        /// <summary>
+        /// Target URL
+        /// </summary>
         [ProviderParameter("Target URL")]
         public string Url { get; set; }
 
+        /// <summary>
+        /// Timmeout
+        /// </summary>
         [ProviderParameter("Timeout")]
         public int Timeout { get; set; } = 20000;
 
+        /// <summary>
+        /// HTTP verb to use for this query
+        /// </summary>
         [ProviderParameter("HTTP method")]
         public string Method { get; set; } = "GET";
 
+        /// <summary>
+        /// Content-type for this query
+        /// </summary>
         [ProviderParameter("Content type")]
         public string ContentType { get; set; }
 
+        /// <summary>
+        /// Request body (for POST only)
+        /// </summary>
         [ProviderParameter("Body (for POST only)")]
-        public string Body { get; set; }
+        public string? Body { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [ProviderParameter("Headers")]
         public Dictionary<string, string> Headers { get; set; }
 
+        /// <summary>
+        /// Proxy URL (optional)
+        /// </summary>
         [ProviderParameter("URL", Category = "Proxy")]
-        public string Proxy { get; set; }
+        public string? Proxy { get; set; }
 
+        /// <summary>
+        /// Proxy user name (for authentified proxies)
+        /// </summary>
         [ProviderParameter("Username", Category = "Proxy")]
-        public string ProxyUsername { get; set; }
+        public string? ProxyUsername { get; set; }
 
+        /// <summary>
+        /// Proxy password (for authentified proxies)
+        /// </summary>
         [ProviderParameter("Password", Category = "Proxy")]
-        public string ProxyPassword { get; set; }
+        public string? ProxyPassword { get; set; }
 
-        public override List<ColumnDescription> GetColumns(string repository, IList<string> names = null)
+        // TODO: implement
+        public override List<ColumnDescription> GetColumns(string? repository, IList<string>? names = null)
         {
             throw new NotImplementedException();
         }
 
+        // TODO: implement
         public override void InvalidateColumnsCache(string repository)
         {
             throw new NotImplementedException();
         }
 
+        // TODO: implement
         public override bool Test(out string details)
         {
             throw new NotImplementedException();
         }
 
-        public override IQueryable<T> GetQueryable<T>(string repository, IList<Dictionary<string, string>> values = null, Dictionary<string, long> statisticsBag = null) 
+        public override IQueryable<T> GetQueryable<T>(string? repository, IList<Dictionary<string, string>>? values = null, Dictionary<string, long>? statisticsBag = null) 
         {
             var sw = new Stopwatch();
 
